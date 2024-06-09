@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_uas_aktivitas/views/home_page.dart';
 
 class MainLayout extends StatefulWidget {
   const MainLayout({super.key});
@@ -9,9 +10,7 @@ class MainLayout extends StatefulWidget {
 
 class _MainLayoutState extends State<MainLayout> {
   final _pages = <Widget>[
-    const Center(
-      child: Icon(Icons.home),
-    ),
+    const HomePage(),
     const Center(
       child: Icon(Icons.local_activity),
     ),
@@ -30,11 +29,11 @@ class _MainLayoutState extends State<MainLayout> {
         currentIndex: currentTabIndex,
         selectedItemColor: Theme.of(context).colorScheme.primary,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: 'Home'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.local_activity), label: 'Aktivitas'),
+              icon: Icon(Icons.local_activity_outlined), label: 'Aktivitas'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.schedule), label: 'Jadwal Kuliah'),
+              icon: Icon(Icons.schedule_outlined), label: 'Jadwal Kuliah'),
         ],
         onTap: (value) => setState(() => currentTabIndex = value),
       ),

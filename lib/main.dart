@@ -3,6 +3,7 @@ import 'package:flutter_application_uas_aktivitas/views/main_layout.dart';
 import 'package:get/get.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(
             seedColor: Colors.red, brightness: Brightness.light),
         useMaterial3: true,
-        fontFamily: 'Century Gothic'
+        fontFamily: 'Century Gothic',
       ),
       debugShowCheckedModeBanner: false,
       home: const MainLayout(),

@@ -1,8 +1,8 @@
 class Activity {
-  final String name;
-  final String description;
-  final DateTime date;
-  final Duration duration;
+  String name;
+  String description;
+  DateTime date;
+  Duration duration;
 
   Activity({
     required this.name,
