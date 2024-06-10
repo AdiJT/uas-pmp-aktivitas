@@ -41,8 +41,8 @@ class _ActivityPageState extends State<ActivityPage> {
               ),
               subtitle: Text(
                   '${activity.date.day}/${activity.date.month}/${activity.date.year}'),
-              trailing: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 200),
+              trailing: SizedBox(
+                width: 200,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -65,7 +65,7 @@ class _ActivityPageState extends State<ActivityPage> {
                         }
                       },
                       itemBuilder: (BuildContext context) {
-                        return {'Detail', 'Hapus'}.map((String choice) {
+                        return {'Edit', 'Hapus'}.map((String choice) {
                           return PopupMenuItem<String>(
                             value: choice,
                             child: Text(choice),

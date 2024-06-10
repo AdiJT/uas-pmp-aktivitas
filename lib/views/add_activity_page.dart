@@ -120,7 +120,7 @@ class _AddActivityPageState extends State<AddActivityPage> {
                           initialDate: DateTime.now(),
                         );
 
-                        if(date != null) {
+                        if (date != null) {
                           dateController.text = date.toIdStyleString();
                         }
                       },
@@ -175,7 +175,7 @@ class _AddActivityPageState extends State<AddActivityPage> {
                           initialTime: TimeOfDay.now(),
                         );
 
-                        if(timeOfDay != null) {
+                        if (timeOfDay != null) {
                           timeController.text = timeOfDay.format(context);
                         }
                       },
@@ -206,24 +206,26 @@ class _AddActivityPageState extends State<AddActivityPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          var date = dateController.text.trim().parseIdStyle();
+          if (_formKey.currentState!.validate()) {
+            var date = dateController.text.trim().parseIdStyle();
 
-          final format = DateFormat('h:mm a');
-          final time =
-              TimeOfDay.fromDateTime(format.parse(timeController.text.trim()));
+            final format = DateFormat('h:mm a');
+            final time = TimeOfDay.fromDateTime(
+                format.parse(timeController.text.trim()));
 
-          date = date!.copyWith(hour: time.hour, minute: time.minute);
+            date = date!.copyWith(hour: time.hour, minute: time.minute);
 
-          controller.addActivity(
-            Activity(
-              name: nameController.text.trim(),
-              description: descriptionController.text.trim(),
-              date: date,
-              duration: duration,
-            ),
-          );
+            controller.addActivity(
+              Activity(
+                name: nameController.text.trim(),
+                description: descriptionController.text.trim(),
+                date: date,
+                duration: duration,
+              ),
+            );
 
-          Get.back();
+            Get.back();
+          }
         },
         child: const Icon(Icons.add),
       ),
