@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_application_uas_aktivitas/models/activity.dart';
 import 'package:get/get.dart';
 
@@ -53,9 +54,37 @@ class ActivityController extends GetxController {
 
   void addActivity(Activity newActivity) {
     activities.add(newActivity);
+    Get.showSnackbar(const GetSnackBar(
+      duration: Duration(seconds: 5),
+      icon: Icon(Icons.check, color: Colors.white),
+      snackPosition: SnackPosition.TOP,
+      shouldIconPulse: false,
+      backgroundColor: Colors.green,
+      message: "Tambah Aktivitas Sukses!",
+    ));
   }
 
   void deleteActivity(Activity activity) {
     activities.remove(activity);
+    Get.showSnackbar(const GetSnackBar(
+      duration: Duration(seconds: 5),
+      icon: Icon(Icons.check, color: Colors.white),
+      snackPosition: SnackPosition.TOP,
+      shouldIconPulse: false,
+      backgroundColor: Colors.red,
+      message: "Hapus Aktivitas Sukses!",
+    ));
+  }
+
+  void editActivity(int index, Activity activity) {
+    activities[index] = activity;
+    Get.showSnackbar(const GetSnackBar(
+      duration: Duration(seconds: 5),
+      icon: Icon(Icons.check, color: Colors.white),
+      snackPosition: SnackPosition.TOP,
+      shouldIconPulse: false,
+      backgroundColor: Colors.green,
+      message: "Edit Aktivitas Sukses!",
+    ));
   }
 }

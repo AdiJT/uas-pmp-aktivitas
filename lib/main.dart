@@ -11,7 +11,7 @@ void main() {
   Get.lazyPut(() => ActivityController());
   Get.lazyPut(() => ScheduleController());
 
-  initializeDateFormatting('en_US', null).then((_) => runApp(MyApp()));
+  initializeDateFormatting('en_US', null).then((_) => runApp(const MyApp()));
 }
 
 class MyApp extends StatelessWidget {

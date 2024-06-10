@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_uas_aktivitas/common_widgets/duration_picker.dart';
-import 'package:flutter_application_uas_aktivitas/commons/date_time_extension.dart';
 import 'package:flutter_application_uas_aktivitas/commons/duration_extension.dart';
 import 'package:flutter_application_uas_aktivitas/commons/validation.dart';
+import 'package:flutter_application_uas_aktivitas/commons/date_time_extension.dart';
 import 'package:flutter_application_uas_aktivitas/controllers/activity_controller.dart';
 import 'package:flutter_application_uas_aktivitas/models/activity.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-class AddActivityPage extends StatefulWidget {
-  const AddActivityPage({super.key});
+class EditActivityPage extends StatefulWidget {
+  const EditActivityPage({super.key, required this.index});
+
+  final int index;
 
   @override
-  State<AddActivityPage> createState() => _AddActivityPageState();
+  State<EditActivityPage> createState() => _EditActivityPageState();
 }
 
-class _AddActivityPageState extends State<AddActivityPage> {
+class _EditActivityPageState extends State<EditActivityPage> {
   final controller = Get.find<ActivityController>();
 
   final _formKey = GlobalKey<FormState>();
@@ -25,6 +27,19 @@ class _AddActivityPageState extends State<AddActivityPage> {
   final dateController = TextEditingController();
   final timeController = TextEditingController();
   var duration = Duration.zero;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final activity = controller.activities[widget.index];
+    nameController.text = activity.name;
+    descriptionController.text = activity.description;
+    dateController.text = activity.date.toIdStyleString();
+    final dateFormat = DateFormat('h:mm a');
+    timeController.text = dateFormat.format(activity.date);
+    duration = activity.duration;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +54,7 @@ class _AddActivityPageState extends State<AddActivityPage> {
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(
             children: [
               Padding(
@@ -46,7 +62,6 @@ class _AddActivityPageState extends State<AddActivityPage> {
                     top: 10, bottom: 5, left: 10, right: 10),
                 child: TextFormField(
                   controller: nameController,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: const InputDecoration(
                     label: Row(
                       children: [
@@ -70,12 +85,6 @@ class _AddActivityPageState extends State<AddActivityPage> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 child: TextFormField(
-                  validator: (value) {
-                    if (value == null || value.trim() == "") {
-                      return "Belum diisi";
-                    }
-                    return null;
-                  },
                   maxLines: 3,
                   controller: descriptionController,
                   decoration: const InputDecoration(
@@ -88,7 +97,6 @@ class _AddActivityPageState extends State<AddActivityPage> {
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 child: TextFormField(
                   controller: dateController,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) {
                     final rules = [
                       notNullOrEmpty,
@@ -141,7 +149,6 @@ class _AddActivityPageState extends State<AddActivityPage> {
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 child: TextFormField(
                   controller: timeController,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) {
                     final rules = [
                       notNullOrEmpty,
@@ -200,6 +207,7 @@ class _AddActivityPageState extends State<AddActivityPage> {
                   children: [
                     const Text('Durasi Aktivitas'),
                     DurationPicker(
+                      initialDuration: duration,
                       onChange: (v) => setState(() {
                         duration = v;
                       }),
@@ -224,7 +232,8 @@ class _AddActivityPageState extends State<AddActivityPage> {
             date = date!.copyWith(hour: time.hour, minute: time.minute);
 
             Get.back(closeOverlays: true);
-            controller.addActivity(
+            controller.editActivity(
+              widget.index,
               Activity(
                 name: nameController.text.trim(),
                 description: descriptionController.text.trim(),
@@ -234,7 +243,7 @@ class _AddActivityPageState extends State<AddActivityPage> {
             );
           }
         },
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.edit),
       ),
     );
   }

@@ -14,8 +14,7 @@ const _monthName = [
 ];
 
 String _getMonthName(int month) {
-  if (month < 1 || month > 12)
-    throw ArgumentError("Invalid Month Value", "month");
+  if (month < 1 || month > 12) throw ArgumentError("Invalid Month Value", "month");
 
   return _monthName[month - 1];
 }

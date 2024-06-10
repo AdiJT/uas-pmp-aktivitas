@@ -35,7 +35,6 @@ extension DayTimeExtension on Day {
       Day.jumat => 'Jumat',
       Day.sabtu => 'Sabtu',
       Day.minggu => 'Minggu',
-      _ => throw Exception(),
     };
   }
 }

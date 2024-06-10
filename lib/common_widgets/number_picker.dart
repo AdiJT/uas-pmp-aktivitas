@@ -53,14 +53,15 @@ class _NumberPickerState extends State<NumberPicker> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 60,
-      height: 110,
+      width: 80,
+      height: 120,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           IconButton(
+            iconSize: 35,
             onPressed: _increment,
             icon: const Icon(Icons.arrow_drop_up),
           ),
@@ -97,6 +98,7 @@ class _NumberPickerState extends State<NumberPicker> {
             ),
           ),
           IconButton(
+            iconSize: 35,
             onPressed: _decrement,
             icon: const Icon(Icons.arrow_drop_down),
           ),

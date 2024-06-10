@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_uas_aktivitas/commons/duration_extension.dart';
 import 'package:flutter_application_uas_aktivitas/controllers/activity_controller.dart';
 import 'package:flutter_application_uas_aktivitas/views/add_activity_page.dart';
+import 'package:flutter_application_uas_aktivitas/views/details_activity_page.dart';
+import 'package:flutter_application_uas_aktivitas/views/edit_activity_page.dart';
 import 'package:get/get.dart';
 
 class ActivityPage extends StatefulWidget {
@@ -32,6 +34,7 @@ class _ActivityPageState extends State<ActivityPage> {
             final activity = controller.activities[index];
 
             return ListTile(
+              onTap: () => Get.to(() => DetailsActivityPage(index: index,)),
               title: Text(
                 activity.name,
                 style: const TextStyle(
@@ -58,8 +61,11 @@ class _ActivityPageState extends State<ActivityPage> {
                     PopupMenuButton<String>(
                       onSelected: (v) {
                         switch (v) {
+                          case 'Edit' :
+                            Get.to(() => EditActivityPage(index: index));
+                            break;
                           case 'Hapus':
-                            controller.deleteActivity(activity);
+                            _showDeleteDialog(index);
                             break;
                           default:
                         }
@@ -85,5 +91,35 @@ class _ActivityPageState extends State<ActivityPage> {
         onPressed: () => Get.to(() => const AddActivityPage()),
       ),
     );
+  }
+
+  void _showDeleteDialog(int index) async {
+    final delete = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Apakah anda yakin ingin menghapus?'),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                TextButton(onPressed: () {
+                  Navigator.of(context).pop(true);
+                }, child: const Text('Hapus')),
+                TextButton(onPressed: () {
+                  Navigator.of(context).pop(false);
+                }, child: const Text('Batal')),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+
+    if(delete != null && delete == true) {
+      controller.deleteActivity(controller.activities[index]);
+    }
   }
 }
