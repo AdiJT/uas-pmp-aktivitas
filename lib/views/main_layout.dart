@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_uas_aktivitas/views/activity_page.dart';
 import 'package:flutter_application_uas_aktivitas/views/home_page.dart';
 
 class MainLayout extends StatefulWidget {
@@ -11,9 +12,7 @@ class MainLayout extends StatefulWidget {
 class _MainLayoutState extends State<MainLayout> {
   final _pages = <Widget>[
     const HomePage(),
-    const Center(
-      child: Icon(Icons.local_activity),
-    ),
+    const ActivityPage(),
     const Center(
       child: Icon(Icons.schedule),
     ),
