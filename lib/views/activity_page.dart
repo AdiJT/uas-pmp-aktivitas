@@ -22,9 +22,13 @@ class _ActivityPageState extends State<ActivityPage> {
       appBar: AppBar(
         title: const Text(
           'Aktivitas',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white, // Mengubah warna teks AppBar menjadi putih
+          ),
         ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor:
+            Colors.lightBlue, // Mengubah warna AppBar menjadi lightBlue
       ),
       body: Obx(
         () => ListView.builder(
@@ -88,7 +92,12 @@ class _ActivityPageState extends State<ActivityPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
+        backgroundColor: Colors
+            .lightBlue, // Mengubah warna background FloatingActionButton menjadi lightBlue
+        child: const Icon(
+          Icons.add,
+          color: Colors.white, // Mengubah warna ikon menjadi putih
+        ),
         onPressed: () => Get.to(() => const AddActivityPage()),
       ),
     );
@@ -98,20 +107,43 @@ class _ActivityPageState extends State<ActivityPage> {
     final delete = await showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: Colors.orangeAccent
+            .withOpacity(0.8), // Mengubah warna background AlertDialog
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Apakah anda yakin ingin menghapus?'),
+            const Text(
+              'Apakah anda yakin ingin menghapus?',
+              style: TextStyle(
+                color: Colors.white, // Mengubah warna teks AlertDialog
+              ),
+            ),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                TextButton(onPressed: () {
-                  Navigator.of(context).pop(true);
-                }, child: const Text('Hapus')),
-                TextButton(onPressed: () {
-                  Navigator.of(context).pop(false);
-                }, child: const Text('Batal')),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                  child: const Text(
+                    'Hapus',
+                    style: TextStyle(
+                      color: Colors.red, // Mengubah warna teks tombol Hapus
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                  child: const Text(
+                    'Batal',
+                    style: TextStyle(
+                      color: Colors.white, // Mengubah warna teks tombol Batal
+                    ),
+                  ),
+                ),
               ],
             )
           ],
@@ -119,7 +151,7 @@ class _ActivityPageState extends State<ActivityPage> {
       ),
     );
 
-    if(delete != null && delete == true) {
+    if (delete != null && delete == true) {
       controller.deleteActivity(controller.activities[index]);
     }
   }

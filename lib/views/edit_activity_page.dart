@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class EditActivityPage extends StatefulWidget {
-  const EditActivityPage({super.key, required this.index});
+  const EditActivityPage({Key? key, required this.index}) : super(key: key);
 
   final int index;
 
@@ -46,10 +46,12 @@ class _EditActivityPageState extends State<EditActivityPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Tambah Aktvitas',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          'Edit Aktivitas',
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white), // Warna teks putih
         ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: Colors.lightBlue, // Warna AppBar menjadi lightblue
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -191,7 +193,7 @@ class _EditActivityPageState extends State<EditActivityPage> {
                         );
 
                         if (timeOfDay != null) {
-                          if(context.mounted) {
+                          if (context.mounted) {
                             timeController.text = timeOfDay.format(context);
                           }
                         }
@@ -247,6 +249,8 @@ class _EditActivityPageState extends State<EditActivityPage> {
           }
         },
         child: const Icon(Icons.edit),
+        backgroundColor:
+            Colors.lightBlue, // Warna FloatingActionButton menjadi lightblue
       ),
     );
   }

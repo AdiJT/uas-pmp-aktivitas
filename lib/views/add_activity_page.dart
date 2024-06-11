@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class AddActivityPage extends StatefulWidget {
-  const AddActivityPage({super.key});
+  const AddActivityPage({Key? key}) : super(key: key);
 
   @override
   State<AddActivityPage> createState() => _AddActivityPageState();
@@ -31,10 +31,12 @@ class _AddActivityPageState extends State<AddActivityPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Tambah Aktvitas',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          'Tambah Aktivitas',
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white), // Warna teks putih
         ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: Colors.lightBlue, // Warna AppBar menjadi lightblue
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -79,7 +81,7 @@ class _AddActivityPageState extends State<AddActivityPage> {
                   maxLines: 3,
                   controller: descriptionController,
                   decoration: const InputDecoration(
-                    labelText: "Dekripsi",
+                    labelText: "Deskripsi",
                   ),
                 ),
               ),
@@ -184,7 +186,7 @@ class _AddActivityPageState extends State<AddActivityPage> {
                         );
 
                         if (timeOfDay != null) {
-                          if(context.mounted) {
+                          if (context.mounted) {
                             timeController.text = timeOfDay.format(context);
                           }
                         }
@@ -209,7 +211,10 @@ class _AddActivityPageState extends State<AddActivityPage> {
                   ],
                 ),
               ),
-              Text(duration.formatDuration()),
+              Text(
+                duration.formatDuration(),
+                style: TextStyle(color: Colors.white), // Warna teks putih
+              ),
             ],
           ),
         ),
@@ -238,6 +243,8 @@ class _AddActivityPageState extends State<AddActivityPage> {
           }
         },
         child: const Icon(Icons.add),
+        backgroundColor:
+            Colors.lightBlue, // Warna FloatingActionButton menjadi lightblue
       ),
     );
   }

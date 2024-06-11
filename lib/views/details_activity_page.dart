@@ -6,7 +6,7 @@ import 'package:flutter_application_uas_aktivitas/views/edit_activity_page.dart'
 import 'package:get/get.dart';
 
 class DetailsActivityPage extends StatefulWidget {
-  const DetailsActivityPage({super.key, required this.index});
+  const DetailsActivityPage({Key? key, required this.index}) : super(key: key);
 
   final int index;
 
@@ -23,29 +23,38 @@ class _DetailsActivityPageState extends State<DetailsActivityPage> {
       appBar: AppBar(
         title: const Text(
           'Detail Aktivitas',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white), // Warna teks putih
         ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: Colors.lightBlue, // Warna AppBar menjadi lightblue
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.edit),
         onPressed: () => Get.to(() => EditActivityPage(index: widget.index)),
+        backgroundColor:
+            Colors.lightBlue, // Warna FloatingActionButton menjadi lightblue
       ),
       body: SingleChildScrollView(
-        child: Card.outlined(
+        child: Card(
           margin: const EdgeInsets.all(20),
+          color: Colors.orangeAccent.withOpacity(
+              0.8), // Warna detail aktivitas menjadi orangeAccent dengan transparansi 0.8
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Obx(() => Text(controller.activities[widget.index].name)),
+                Obx(() => Text(controller.activities[widget.index].name,
+                    style: TextStyle(color: Colors.white))), // Warna teks putih
                 const Divider(),
                 Align(
                   alignment: Alignment.topLeft,
-                  child: Obx(() =>
-                      Text(controller.activities[widget.index].description)),
+                  child: Obx(() => Text(
+                      controller.activities[widget.index].description,
+                      style:
+                          TextStyle(color: Colors.white))), // Warna teks putih
                 ),
                 const Divider(),
                 Align(
@@ -54,6 +63,7 @@ class _DetailsActivityPageState extends State<DetailsActivityPage> {
                     () => Text(
                       controller.activities[widget.index].date
                           .toIdStyleStringWithMonthName(),
+                      style: TextStyle(color: Colors.white), // Warna teks putih
                     ),
                   ),
                 ),
@@ -64,6 +74,7 @@ class _DetailsActivityPageState extends State<DetailsActivityPage> {
                       TimeOfDay.fromDateTime(
                               controller.activities[widget.index].date)
                           .format(context),
+                      style: TextStyle(color: Colors.white), // Warna teks putih
                     ),
                   ),
                 ),
@@ -73,6 +84,7 @@ class _DetailsActivityPageState extends State<DetailsActivityPage> {
                     () => Text(
                       controller.activities[widget.index].duration
                           .formatDuration(),
+                      style: TextStyle(color: Colors.white), // Warna teks putih
                     ),
                   ),
                 ),
