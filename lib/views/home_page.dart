@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_uas_aktivitas/common_widgets/schedule_card.dart';
 import 'package:flutter_application_uas_aktivitas/controllers/activity_controller.dart';
 import 'package:flutter_application_uas_aktivitas/controllers/schedule_controller.dart';
 import 'package:flutter_application_uas_aktivitas/commons/duration_extension.dart';
+import 'package:flutter_application_uas_aktivitas/models/schedule.dart';
 import 'package:get/get.dart';
 
 class HomePage extends StatefulWidget {
@@ -47,7 +49,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                    Divider(color: Colors.white), // Warna Divider putih
+                    const Divider(color: Colors.white), // Warna Divider putih
                     activityController.todayActivities.isNotEmpty
                         ? Obx(
                             () => ListView.builder(
@@ -109,76 +111,13 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(10),
-              child: Card(
-                color: Colors.purpleAccent.withOpacity(
-                    0.8), // Warna Card purpleAccent dengan transparansi
-                elevation: 7,
-                child: Column(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(top: 10),
-                      child: const Text(
-                        'Jadwal Hari Ini',
-                        style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white, // Warna teks putih
-                        ),
-                      ),
-                    ),
-                    Divider(color: Colors.white), // Warna Divider putih
-                    scheduleController.todaySchedule.isNotEmpty
-                        ? Obx(
-                            () => ListView.builder(
-                              shrinkWrap: true,
-                              itemCount:
-                                  scheduleController.todaySchedule.length,
-                              itemBuilder: (context, index) {
-                                final schedule =
-                                    scheduleController.todaySchedule[index];
-
-                                return ListTile(
-                                  title: Text(
-                                    schedule.title,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15,
-                                      color: Colors.white, // Warna teks putih
-                                    ),
-                                  ),
-                                  trailing: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        '${"${schedule.time.hour}".padLeft(2, '0')}:${"${schedule.time.minute}".padLeft(2, '0')}',
-                                        style: const TextStyle(
-                                          color: Colors
-                                              .white70, // Warna teks putih dengan transparansi
-                                        ),
-                                      ),
-                                      Text(
-                                        schedule.duration.formatDuration(),
-                                        style: const TextStyle(
-                                          color: Colors
-                                              .white70, // Warna teks putih dengan transparansi
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
-                          )
-                        : const Text(
-                            "Jadwal Kosong",
-                            style: TextStyle(
-                              color: Colors.redAccent, // Warna teks redAccent
-                            ),
-                          ),
-                  ],
-                ),
+              padding: const EdgeInsets.all(5),
+              child: ScheduleCard(
+                schedules: scheduleController.todaySchedule,
+                day: dayFromDateTime(DateTime.now()),
+                title: "Jadwal Hari Ini",
+                canAdd: false,
+                showMenu: false,
               ),
             ),
           ],
