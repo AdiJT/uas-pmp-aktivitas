@@ -51,8 +51,31 @@ class ActivityController extends GetxController {
   }
 
   void checkDoneActivity(Activity activity) {
-    activity.isDone = true;
-    editActivity(activity);
+    _db
+        .update(activityTable, {'isDone': 1},
+            where: "id = ?", whereArgs: [activity.id])
+        .then((count) {
+      fetchData();
+      if (count > 0) {
+        Get.showSnackbar(GetSnackBar(
+          duration: const Duration(seconds: 5),
+          icon: const Icon(Icons.check, color: Colors.white),
+          snackPosition: SnackPosition.TOP,
+          shouldIconPulse: false,
+          backgroundColor: Colors.green,
+          message: 'Aktivitas "${activity.name}" Telah Selesai!',
+        ));
+      } else {
+        Get.showSnackbar(GetSnackBar(
+          duration: const Duration(seconds: 5),
+          icon: const Icon(Icons.check, color: Colors.white),
+          snackPosition: SnackPosition.TOP,
+          shouldIconPulse: false,
+          backgroundColor: Colors.red,
+          message: 'Tanda Aktivitas "${activity.name}" Gagal Diubah!',
+        ));
+      }
+    });
   }
 
   void deleteActivity(int id) {
@@ -85,24 +108,24 @@ class ActivityController extends GetxController {
     _db.update(activityTable, activity.toMap(),
         where: "id = ?", whereArgs: [activity.id]).then((count) {
       fetchData();
-      if(count > 0) {
+      if (count > 0) {
         Get.showSnackbar(const GetSnackBar(
-        duration: Duration(seconds: 5),
-        icon: Icon(Icons.check, color: Colors.white),
-        snackPosition: SnackPosition.TOP,
-        shouldIconPulse: false,
-        backgroundColor: Colors.green,
-        message: "Edit Aktivitas Sukses!",
-      ));
+          duration: Duration(seconds: 5),
+          icon: Icon(Icons.check, color: Colors.white),
+          snackPosition: SnackPosition.TOP,
+          shouldIconPulse: false,
+          backgroundColor: Colors.green,
+          message: "Edit Aktivitas Sukses!",
+        ));
       } else {
         Get.showSnackbar(const GetSnackBar(
-        duration: Duration(seconds: 5),
-        icon: Icon(Icons.check, color: Colors.white),
-        snackPosition: SnackPosition.TOP,
-        shouldIconPulse: false,
-        backgroundColor: Colors.red,
-        message: "Edit Aktivitas Gagal!",
-      ));
+          duration: Duration(seconds: 5),
+          icon: Icon(Icons.check, color: Colors.white),
+          snackPosition: SnackPosition.TOP,
+          shouldIconPulse: false,
+          backgroundColor: Colors.red,
+          message: "Edit Aktivitas Gagal!",
+        ));
       }
     });
   }

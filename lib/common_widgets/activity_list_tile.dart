@@ -147,6 +147,7 @@ class _ActivityListTileState extends State<ActivityListTile> {
               ],
             ),
             PopupMenuButton<String>(
+              iconColor: Colors.white,
               onSelected: (v) {
                 switch (v) {
                   case 'Edit':
