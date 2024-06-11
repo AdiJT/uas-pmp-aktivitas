@@ -25,11 +25,10 @@ class _ActivityPageState extends State<ActivityPage> {
           'Aktivitas',
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: Colors.white, // Mengubah warna teks AppBar menjadi putih
+            color: Colors.white,
           ),
         ),
-        backgroundColor:
-            Colors.lightBlue, // Mengubah warna AppBar menjadi lightBlue
+        backgroundColor: Colors.lightBlue,
       ),
       body: Obx(
         () => ListView.builder(
@@ -38,56 +37,80 @@ class _ActivityPageState extends State<ActivityPage> {
           itemBuilder: (context, index) {
             final activity = controller.activities[index];
 
-            return ListTile(
-              tileColor: activity.isDone == false ? Colors.grey[300] : null,
-              onTap: () => Get.to(() => DetailsActivityPage(index: index,)),
-              title: Text(
-                activity.name,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                ),
+            return Container(
+              decoration: BoxDecoration(
+                color: activity.isDone == false
+                    ? const Color.fromARGB(255, 214, 165, 92)
+                    : Colors.orangeAccent.withOpacity(0.8),
+                borderRadius: BorderRadius.circular(15),
               ),
-              subtitle: Text(
-                  '${activity.date.day}/${activity.date.month}/${activity.date.year}'),
-              trailing: SizedBox(
-                width: 200,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(TimeOfDay.fromDateTime(activity.date)
-                            .format(context)),
-                        Text(activity.duration.formatDuration()),
-                      ],
-                    ),
-                    PopupMenuButton<String>(
-                      onSelected: (v) {
-                        switch (v) {
-                          case 'Edit' :
-                            Get.to(() => EditActivityPage(index: index));
-                            break;
-                          case 'Hapus':
-                            showDeleteDialog(deleteAction: () {
+              margin: const EdgeInsets.only(left: 10, right: 10, top: 10),
+              child: ListTile(
+                onTap: () => Get.to(() => DetailsActivityPage(index: index)),
+                leading: activity.isDone ? Icon(Icons.done) : null,
+                title: Text(
+                  activity.name,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                    color: Colors.white,
+                  ),
+                ),
+                subtitle: Text(
+                  '${activity.date.day}/${activity.date.month}/${activity.date.year}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                trailing: SizedBox(
+                  width: 200,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            TimeOfDay.fromDateTime(activity.date)
+                                .format(context),
+                            style: const TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                          Text(
+                            activity.duration.formatDuration(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                      PopupMenuButton<String>(
+                        onSelected: (v) {
+                          switch (v) {
+                            case 'Edit':
+                              Get.to(() => EditActivityPage(index: index));
+                              break;
+                            case 'Hapus':
+                              showDeleteDialog(deleteAction: () {
                               controller.deleteActivity(activity);
                             }, context: context);
-                            break;
-                          default:
-                        }
-                      },
-                      itemBuilder: (BuildContext context) {
-                        return {'Edit', 'Hapus'}.map((String choice) {
-                          return PopupMenuItem<String>(
-                            value: choice,
-                            child: Text(choice),
-                          );
-                        }).toList();
-                      },
-                    ),
-                  ],
+                              break;
+                            default:
+                          }
+                        },
+                        itemBuilder: (BuildContext context) {
+                          return {'Edit', 'Hapus'}.map((String choice) {
+                            return PopupMenuItem<String>(
+                              value: choice,
+                              child: Text(choice),
+                            );
+                          }).toList();
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );
@@ -95,11 +118,10 @@ class _ActivityPageState extends State<ActivityPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors
-            .lightBlue, // Mengubah warna background FloatingActionButton menjadi lightBlue
+        backgroundColor: Colors.lightBlue,
         child: const Icon(
           Icons.add,
-          color: Colors.white, // Mengubah warna ikon menjadi putih
+          color: Colors.white,
         ),
         onPressed: () => Get.to(() => const AddActivityPage()),
       ),
