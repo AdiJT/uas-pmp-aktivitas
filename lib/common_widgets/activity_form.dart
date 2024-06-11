@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_uas_aktivitas/common_widgets/date_text_form_field.dart';
 import 'package:flutter_application_uas_aktivitas/common_widgets/duration_picker.dart';
+import 'package:flutter_application_uas_aktivitas/common_widgets/time_text_form_field.dart';
 import 'package:flutter_application_uas_aktivitas/commons/date_time_extension.dart';
 import 'package:flutter_application_uas_aktivitas/commons/duration_extension.dart';
-import 'package:flutter_application_uas_aktivitas/commons/validation.dart';
 import 'package:flutter_application_uas_aktivitas/models/activity.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -114,60 +114,7 @@ class _ActivityFormState extends State<ActivityForm> {
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                child: TextFormField(
-                  controller: timeController,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) {
-                    final rules = [
-                      notNullOrEmpty,
-                      parseSuccess((s) {
-                        try {
-                          final format = DateFormat('h:mm a');
-                          return TimeOfDay.fromDateTime(format.parse(value!));
-                        } on Exception catch (_) {
-                          return null;
-                        }
-                      })
-                    ];
-
-                    final result = rules.map((e) => e.validate(value));
-
-                    if (!result.every((e) => e.success)) {
-                      return result
-                          .firstWhere((e) => e.success == false)
-                          .errorMessage;
-                    }
-
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    label: const Row(
-                      children: [
-                        Text('Waktu'),
-                        Text(
-                          ' *',
-                          style: TextStyle(color: Colors.red),
-                        )
-                      ],
-                    ),
-                    hintText: "h:mm AM/PM",
-                    suffixIcon: IconButton(
-                      onPressed: () async {
-                        final timeOfDay = await showTimePicker(
-                          context: context,
-                          initialTime: TimeOfDay.now(),
-                        );
-
-                        if (timeOfDay != null) {
-                          if (context.mounted) {
-                            timeController.text = timeOfDay.format(context);
-                          }
-                        }
-                      },
-                      icon: const Icon(Icons.schedule),
-                    ),
-                  ),
-                ),
+                child: TimeTextFormField(controller: timeController),
               ),
               Padding(
                 padding:

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_uas_aktivitas/common_widgets/dialogs.dart';
 import 'package:flutter_application_uas_aktivitas/common_widgets/duration_picker.dart';
+import 'package:flutter_application_uas_aktivitas/common_widgets/time_text_form_field.dart';
 import 'package:flutter_application_uas_aktivitas/commons/duration_extension.dart';
 import 'package:flutter_application_uas_aktivitas/commons/validation.dart';
 import 'package:flutter_application_uas_aktivitas/controllers/schedule_controller.dart';
@@ -80,72 +81,20 @@ class _ScheduleCardState extends State<ScheduleCard> {
                           labelText: "Dekripsi",
                         ),
                       ),
-                      TextFormField(
+                      TimeTextFormField(
                         controller: timeController,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) {
-                          final rules = [
-                            notNullOrEmpty,
-                            parseSuccess((s) {
-                              try {
-                                final format = DateFormat('h:mm a');
-                                return TimeOfDay.fromDateTime(
-                                    format.parse(value!));
-                              } on Exception catch (_) {
-                                return null;
-                              }
-                            }),
-                            ValidationRule<String?>(
-                                message: "Slot waktu hari ini tidak cukup",
-                                rule: (s) {
-                                  final format = DateFormat('h:mm a');
-                                  final duration = durationController.value;
-                                  final startTime = TimeOfDay.fromDateTime(
-                                      format.parse(value!));
+                        validator: (timeOfday) {
+                          final rule = ValidationRule<TimeOfDay?>(
+                            message: "Slot waktu hari ini tidak cukup",
+                            rule: (startTime) => controller.checkTimeSlotInDay(
+                                day, startTime!, durationController.value),
+                          );
+                          final result = rule.validate(timeOfday);
 
-                                  return controller.checkTimeSlotInDay(
-                                      day, startTime, duration);
-                                })
-                          ];
-
-                          final result = rules.map((e) => e.validate(value));
-
-                          if (!result.every((e) => e.success)) {
-                            return result
-                                .firstWhere((e) => e.success == false)
-                                .errorMessage;
-                          }
-
+                          if(result.success == false) return result.errorMessage;
+                          
                           return null;
                         },
-                        decoration: InputDecoration(
-                          label: const Row(
-                            children: [
-                              Text('Waktu'),
-                              Text(
-                                ' *',
-                                style: TextStyle(color: Colors.red),
-                              )
-                            ],
-                          ),
-                          hintText: "h:mm AM/PM",
-                          suffixIcon: IconButton(
-                            onPressed: () async {
-                              final timeOfDay = await showTimePicker(
-                                context: context,
-                                initialTime: TimeOfDay.now(),
-                              );
-
-                              if (timeOfDay != null) {
-                                if (context.mounted) {
-                                  timeController.text =
-                                      timeOfDay.format(context);
-                                }
-                              }
-                            },
-                            icon: const Icon(Icons.schedule),
-                          ),
-                        ),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
