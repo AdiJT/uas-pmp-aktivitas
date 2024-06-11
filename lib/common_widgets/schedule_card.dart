@@ -91,8 +91,9 @@ class _ScheduleCardState extends State<ScheduleCard> {
                           );
                           final result = rule.validate(timeOfday);
 
-                          if(result.success == false) return result.errorMessage;
-                          
+                          if (result.success == false)
+                            return result.errorMessage;
+
                           return null;
                         },
                       ),
@@ -250,11 +251,23 @@ class _ScheduleCardState extends State<ScheduleCard> {
                     );
                   },
                 )
-              : Text(
-                  "Jadwal Hari ${day.toCascadeString()} Kosong",
-                  style: const TextStyle(
-                    color: Colors.white,
-                  ),
+              : Column(
+                  children: [
+                    const Icon(
+                      Icons.schedule,
+                      size: 100,
+                      color: Colors.white54,
+                    ),
+                    Text(
+                      "Jadwal Hari ${day.toCascadeString()} Kosong",
+                      style: const TextStyle(
+                        color: Colors.white54,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
                 ),
           if (widget.canAdd) ...[
             const Divider(color: Colors.white),

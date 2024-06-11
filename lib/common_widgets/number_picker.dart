@@ -61,7 +61,8 @@ class _NumberPickerState extends State<NumberPicker> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           IconButton(
-            iconSize: 35,
+            padding: EdgeInsets.zero,
+            iconSize: kMinInteractiveDimension,
             onPressed: _increment,
             icon: const Icon(Icons.arrow_drop_up),
           ),
@@ -98,7 +99,8 @@ class _NumberPickerState extends State<NumberPicker> {
             ),
           ),
           IconButton(
-            iconSize: 35,
+            padding: EdgeInsets.zero,
+            iconSize: kMinInteractiveDimension,
             onPressed: _decrement,
             icon: const Icon(Icons.arrow_drop_down),
           ),
