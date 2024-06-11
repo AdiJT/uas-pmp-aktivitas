@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_uas_aktivitas/common_widgets/dialogs.dart';
 import 'package:flutter_application_uas_aktivitas/commons/duration_extension.dart';
 import 'package:flutter_application_uas_aktivitas/controllers/activity_controller.dart';
 import 'package:flutter_application_uas_aktivitas/views/add_activity_page.dart';
@@ -70,7 +71,9 @@ class _ActivityPageState extends State<ActivityPage> {
                             Get.to(() => EditActivityPage(index: index));
                             break;
                           case 'Hapus':
-                            _showDeleteDialog(index);
+                            showDeleteDialog(deleteAction: () {
+                              controller.deleteActivity(activity);
+                            }, context: context);
                             break;
                           default:
                         }
@@ -101,58 +104,5 @@ class _ActivityPageState extends State<ActivityPage> {
         onPressed: () => Get.to(() => const AddActivityPage()),
       ),
     );
-  }
-
-  void _showDeleteDialog(int index) async {
-    final delete = await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Colors.orangeAccent
-            .withOpacity(0.8), // Mengubah warna background AlertDialog
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              'Apakah anda yakin ingin menghapus?',
-              style: TextStyle(
-                color: Colors.white, // Mengubah warna teks AlertDialog
-              ),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(true);
-                  },
-                  child: const Text(
-                    'Hapus',
-                    style: TextStyle(
-                      color: Colors.red, // Mengubah warna teks tombol Hapus
-                    ),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(false);
-                  },
-                  child: const Text(
-                    'Batal',
-                    style: TextStyle(
-                      color: Colors.white, // Mengubah warna teks tombol Batal
-                    ),
-                  ),
-                ),
-              ],
-            )
-          ],
-        ),
-      ),
-    );
-
-    if (delete != null && delete == true) {
-      controller.deleteActivity(controller.activities[index]);
-    }
   }
 }
