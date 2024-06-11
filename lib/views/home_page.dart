@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
           'Home',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: Colors.lightBlue, // Warna AppBar lightBlue
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -31,7 +31,8 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.all(10),
               child: Card(
-                color: Theme.of(context).colorScheme.surface,
+                color: Colors.orangeAccent.withOpacity(
+                    0.8), // Warna Card orangeAccent dengan transparansi
                 elevation: 7,
                 child: Column(
                   children: [
@@ -39,42 +40,70 @@ class _HomePageState extends State<HomePage> {
                       margin: const EdgeInsets.only(top: 10),
                       child: const Text(
                         'Aktivitas Hari Ini',
-                        style:
-                            TextStyle(fontSize: 25, fontWeight: FontWeight.w700),
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white, // Warna teks putih
+                        ),
                       ),
                     ),
-                    Divider(color: Theme.of(context).colorScheme.primary),
-                    activityController.todayActivities.isNotEmpty ?
-                    Obx(
-                      () => ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: activityController.todayActivities.length,
-                        itemBuilder: (context, index) {
-                          final activity = activityController.todayActivities[index];
-        
-                          return ListTile(
-                            title: Text(
-                              activity.name,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                              ),
+                    Divider(color: Colors.white), // Warna Divider putih
+                    activityController.todayActivities.isNotEmpty
+                        ? Obx(
+                            () => ListView.builder(
+                              shrinkWrap: true,
+                              itemCount:
+                                  activityController.todayActivities.length,
+                              itemBuilder: (context, index) {
+                                final activity =
+                                    activityController.todayActivities[index];
+
+                                return ListTile(
+                                  title: Text(
+                                    activity.name,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                      color: Colors.white, // Warna teks putih
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    '${activity.date.day}/${activity.date.month}/${activity.date.year}',
+                                    style: const TextStyle(
+                                      color: Colors
+                                          .white70, // Warna subtitle putih dengan transparansi
+                                    ),
+                                  ),
+                                  trailing: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '${activity.date.hour}:${activity.date.minute}',
+                                        style: const TextStyle(
+                                          color: Colors
+                                              .white70, // Warna teks putih dengan transparansi
+                                        ),
+                                      ),
+                                      Text(
+                                        activity.duration.formatDuration(),
+                                        style: const TextStyle(
+                                          color: Colors
+                                              .white70, // Warna teks putih dengan transparansi
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
                             ),
-                            subtitle: Text(
-                                '${activity.date.day}/${activity.date.month}/${activity.date.year}'),
-                            trailing: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                    '${activity.date.hour}:${activity.date.minute}'),
-                                Text(activity.duration.formatDuration()),
-                              ],
+                          )
+                        : const Text(
+                            "Tidak Ada Aktivitas Hari Ini",
+                            style: TextStyle(
+                              color: Colors.redAccent, // Warna teks redAccent
                             ),
-                          );
-                        },
-                      ),
-                    ) : const Text("Tidak Ada Aktivitas Hari Ini"),
+                          ),
                   ],
                 ),
               ),
@@ -82,7 +111,8 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.all(10),
               child: Card(
-                color: Theme.of(context).colorScheme.surface,
+                color: Colors.purpleAccent.withOpacity(
+                    0.8), // Warna Card purpleAccent dengan transparansi
                 elevation: 7,
                 child: Column(
                   children: [
@@ -90,40 +120,63 @@ class _HomePageState extends State<HomePage> {
                       margin: const EdgeInsets.only(top: 10),
                       child: const Text(
                         'Jadwal Hari Ini',
-                        style:
-                            TextStyle(fontSize: 25, fontWeight: FontWeight.w700),
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white, // Warna teks putih
+                        ),
                       ),
                     ),
-                    Divider(color: Theme.of(context).colorScheme.primary),
-                    scheduleController.todaySchedule.isNotEmpty ?
-                    Obx(
-                      () => ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: scheduleController.todaySchedule.length,
-                        itemBuilder: (context, index) {
-                          final schedule = scheduleController.todaySchedule[index];
-        
-                          return ListTile(
-                            title: Text(
-                              schedule.title,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                              ),
+                    Divider(color: Colors.white), // Warna Divider putih
+                    scheduleController.todaySchedule.isNotEmpty
+                        ? Obx(
+                            () => ListView.builder(
+                              shrinkWrap: true,
+                              itemCount:
+                                  scheduleController.todaySchedule.length,
+                              itemBuilder: (context, index) {
+                                final schedule =
+                                    scheduleController.todaySchedule[index];
+
+                                return ListTile(
+                                  title: Text(
+                                    schedule.title,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                      color: Colors.white, // Warna teks putih
+                                    ),
+                                  ),
+                                  trailing: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '${"${schedule.time.hour}".padLeft(2, '0')}:${"${schedule.time.minute}".padLeft(2, '0')}',
+                                        style: const TextStyle(
+                                          color: Colors
+                                              .white70, // Warna teks putih dengan transparansi
+                                        ),
+                                      ),
+                                      Text(
+                                        schedule.duration.formatDuration(),
+                                        style: const TextStyle(
+                                          color: Colors
+                                              .white70, // Warna teks putih dengan transparansi
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
                             ),
-                            trailing: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                    '${"${schedule.time.hour}".padLeft(2, '0')}:${"${schedule.time.minute}".padLeft(2, '0')}'),
-                                Text(schedule.duration.formatDuration()),
-                              ],
+                          )
+                        : const Text(
+                            "Jadwal Kosong",
+                            style: TextStyle(
+                              color: Colors.redAccent, // Warna teks redAccent
                             ),
-                          );
-                        },
-                      ),
-                    ) : const Text("Jadwal Kosong"),
+                          ),
                   ],
                 ),
               ),

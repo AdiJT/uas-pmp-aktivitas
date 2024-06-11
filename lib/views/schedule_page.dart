@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class SchedulePage extends StatefulWidget {
-  const SchedulePage({super.key});
+  const SchedulePage({Key? key}) : super(key: key);
 
   @override
   State<SchedulePage> createState() => _SchedulePageState();
@@ -79,15 +79,15 @@ class _SchedulePageState extends State<SchedulePage> {
                               }
                             })
                           ];
-                      
+
                           final result = rules.map((e) => e.validate(value));
-                      
+
                           if (!result.every((e) => e.success)) {
                             return result
                                 .firstWhere((e) => e.success == false)
                                 .errorMessage;
                           }
-                      
+
                           return null;
                         },
                         decoration: InputDecoration(
@@ -107,10 +107,11 @@ class _SchedulePageState extends State<SchedulePage> {
                                 context: context,
                                 initialTime: TimeOfDay.now(),
                               );
-                      
+
                               if (timeOfDay != null) {
                                 if (context.mounted) {
-                                  timeController.text = timeOfDay.format(context);
+                                  timeController.text =
+                                      timeOfDay.format(context);
                                 }
                               }
                             },
@@ -136,12 +137,14 @@ class _SchedulePageState extends State<SchedulePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    TextButton(onPressed: () {
-                      if(formKey.currentState!.validate()) {
-                        
-                      }
-                    }, child: const Text('Tambah')),
-                    TextButton(onPressed: () => Get.back(), child: const Text('Batal')),
+                    TextButton(
+                        onPressed: () {
+                          if (formKey.currentState!.validate()) {}
+                        },
+                        child: const Text('Tambah')),
+                    TextButton(
+                        onPressed: () => Get.back(),
+                        child: const Text('Batal')),
                   ],
                 ),
               ],
@@ -155,7 +158,8 @@ class _SchedulePageState extends State<SchedulePage> {
   Widget _scheduleCard(Day day, List<Schedule> schedules) {
     return Card(
       margin: const EdgeInsets.all(10),
-      color: Theme.of(context).colorScheme.surface,
+      color: Colors.purpleAccent.withOpacity(
+          0.8), // Warna Card menjadi purpleAccent dengan transparansi 0.8
       elevation: 7,
       child: Column(
         children: [
@@ -163,10 +167,13 @@ class _SchedulePageState extends State<SchedulePage> {
             margin: const EdgeInsets.only(top: 10),
             child: Text(
               day.toCascadeString(),
-              style: const TextStyle(fontSize: 25, fontWeight: FontWeight.w700),
+              style: const TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white), // Warna teks putih
             ),
           ),
-          Divider(color: Theme.of(context).colorScheme.primary),
+          Divider(color: Colors.white), // Warna Divider putih
           schedules.isNotEmpty
               ? ListView.builder(
                   shrinkWrap: true,
@@ -181,6 +188,7 @@ class _SchedulePageState extends State<SchedulePage> {
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
+                          color: Colors.white, // Warna teks putih
                         ),
                       ),
                       trailing: Column(
@@ -188,17 +196,24 @@ class _SchedulePageState extends State<SchedulePage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                              '${"${schedule.time.hour}".padLeft(2, '0')}:${"${schedule.time.minute}".padLeft(2, '0')}'),
-                          Text(schedule.duration.formatDuration()),
+                              '${"${schedule.time.hour}".padLeft(2, '0')}:${"${schedule.time.minute}".padLeft(2, '0')}',
+                              style: const TextStyle(
+                                  color: Colors.white)), // Warna teks putih
+                          Text(schedule.duration.formatDuration(),
+                              style: const TextStyle(
+                                  color: Colors.white)), // Warna teks putih
                         ],
                       ),
                     );
                   },
                 )
-              : Text("Jadwal Hari ${day.toCascadeString()} Kosong"),
-          Divider(color: Theme.of(context).colorScheme.primary),
+              : Text("Jadwal Hari ${day.toCascadeString()} Kosong",
+                  style:
+                      const TextStyle(color: Colors.white)), // Warna teks putih
+          Divider(color: Colors.white), // Warna Divider putih
           TextButton(
-            child: const Text('Tambah'),
+            child: const Text('Tambah',
+                style: TextStyle(color: Colors.white)), // Warna teks putih
             onPressed: () {
               _addScheduleDialog(day);
             },
@@ -214,9 +229,11 @@ class _SchedulePageState extends State<SchedulePage> {
       appBar: AppBar(
         title: const Text(
           'Jadwal',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white), // Warna teks putih
         ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: Colors.lightBlue, // Warna AppBar menjadi lightblue
       ),
       body: SingleChildScrollView(
         child: Obx(
