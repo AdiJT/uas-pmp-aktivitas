@@ -32,6 +32,9 @@ class ActivityController extends GetxController {
         },
       ).toList();
 
+  List<Activity> get dueActivities =>
+      activities.where((a) => a.isDone == false).toList();
+
   void addActivity(Activity newActivity) {
     _db.insert(activityTable, newActivity.toMap()).then((_) {
       fetchData();
