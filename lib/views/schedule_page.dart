@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class SchedulePage extends StatefulWidget {
-  const SchedulePage({Key? key}) : super(key: key);
+  const SchedulePage({super.key});
 
   @override
   State<SchedulePage> createState() => _SchedulePageState();
@@ -16,6 +16,59 @@ class SchedulePage extends StatefulWidget {
 
 class _SchedulePageState extends State<SchedulePage> {
   final controller = Get.find<ScheduleController>();
+
+  void _showDeleteDialog(Schedule schedule) async {
+    final delete = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.orangeAccent
+            .withOpacity(0.8), // Mengubah warna background AlertDialog
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Apakah anda yakin ingin menghapus?',
+              style: TextStyle(
+                color: Colors.white, // Mengubah warna teks AlertDialog
+              ),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                  child: const Text(
+                    'Hapus',
+                    style: TextStyle(
+                      color: Colors.red, // Mengubah warna teks tombol Hapus
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                  child: const Text(
+                    'Batal',
+                    style: TextStyle(
+                      color: Colors.white, // Mengubah warna teks tombol Batal
+                    ),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+
+    if (delete != null && delete == true) {
+      controller.deleteSchedule(schedule);
+    }
+  }
 
   void _addScheduleDialog(Day day) {
     final formKey = GlobalKey<FormState>();
@@ -82,51 +135,14 @@ class _SchedulePageState extends State<SchedulePage> {
                                 message: "Slot waktu hari ini tidak cukup",
                                 rule: (s) {
                                   final format = DateFormat('h:mm a');
+                                  final duration = durationController.value;
                                   final startTime = TimeOfDay.fromDateTime(
                                       format.parse(value!));
 
-                                  final startTimeInHour =
-                                      startTime.hour.toDouble() +
-                                          (startTime.minute.toDouble() / 60);
-                                  final duration = durationController.value;
-
-                                  if (startTimeInHour + duration.inHours > 24) {
-                                    return false;
-                                  }
-
-                                  final endTimeInHour = startTimeInHour +
-                                      (duration.inHours +
-                                          (duration.inMinutes % 60) / 60);
-
-                                  final daySchedules =
-                                      controller.scheduleByDay[day]?.map((e) {
-                                    final sT = e.time.hour.toDouble() +
-                                        (e.time.minute.toDouble() / 60);
-                                    final eT = sT +
-                                        (e.duration.inHours +
-                                            (e.duration.inMinutes % 60) / 60);
-                                    return (sT, eT);
-                                  }).toList();
-
-                                  if (daySchedules == null ||
-                                      daySchedules.isEmpty) return true;
-
-                                  if (daySchedules
-                                      .any((s) => s.$1 == startTimeInHour)) {
-                                    return false;
-                                  }
-
-                                  if (daySchedules
-                                      .any((s) => s.$2 == endTimeInHour)) {
-                                    return false;
-                                  }
-
-                                  
-
-                                  return true;
+                                  return controller.checkTimeSlotInDay(
+                                      day, startTime, duration);
                                 })
                           ];
-
 
                           final result = rules.map((e) => e.validate(value));
 
@@ -183,12 +199,27 @@ class _SchedulePageState extends State<SchedulePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    TextButton(onPressed: () {
-                      if(formKey.currentState!.validate()) {
-                        
-                      }
-                    }, child: const Text('Tambah')),
-                    TextButton(onPressed: () => Get.back(), child: const Text('Batal')),
+                    TextButton(
+                        onPressed: () {
+                          if (formKey.currentState!.validate()) {
+                            final format = DateFormat('h:mm a');
+
+                            final schedule = Schedule(
+                              title: titleController.text,
+                              day: day,
+                              time: TimeOfDay.fromDateTime(
+                                  format.parse(timeController.text)),
+                              duration: durationController.value,
+                            );
+
+                            Get.back(closeOverlays: true);
+                            controller.addSchedule(schedule);
+                          }
+                        },
+                        child: const Text('Tambah')),
+                    TextButton(
+                        onPressed: () => Get.back(),
+                        child: const Text('Batal')),
                   ],
                 ),
               ],
@@ -217,7 +248,7 @@ class _SchedulePageState extends State<SchedulePage> {
                   color: Colors.white), // Warna teks putih
             ),
           ),
-          Divider(color: Colors.white), // Warna Divider putih
+          const Divider(color: Colors.white), // Warna Divider putih
           schedules.isNotEmpty
               ? ListView.builder(
                   shrinkWrap: true,
@@ -235,29 +266,64 @@ class _SchedulePageState extends State<SchedulePage> {
                           color: Colors.white, // Warna teks putih
                         ),
                       ),
-                      trailing: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      trailing: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
-                              '${"${schedule.time.hour}".padLeft(2, '0')}:${"${schedule.time.minute}".padLeft(2, '0')}',
-                              style: const TextStyle(
-                                  color: Colors.white)), // Warna teks putih
-                          Text(schedule.duration.formatDuration(),
-                              style: const TextStyle(
-                                  color: Colors.white)), // Warna teks putih
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                '${"${schedule.time.hour}".padLeft(2, '0')}:${"${schedule.time.minute}".padLeft(2, '0')}',
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                              Text(
+                                schedule.duration.formatDuration(),
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                          PopupMenuButton<String>(
+                            padding: const EdgeInsets.only(
+                              top: 8,
+                              left: 8,
+                              bottom: 8,
+                            ),
+                            iconColor: Colors.white,
+                            onSelected: (v) {
+                              switch (v) {
+                                case 'Edit':
+                                  break;
+                                case 'Hapus':
+                                  _showDeleteDialog(schedule);
+                                  break;
+                                default:
+                              }
+                            },
+                            itemBuilder: (BuildContext context) {
+                              return {'Edit', 'Hapus'}.map((String choice) {
+                                return PopupMenuItem<String>(
+                                  value: choice,
+                                  child: Text(choice),
+                                );
+                              }).toList();
+                            },
+                          ),
                         ],
                       ),
                     );
                   },
                 )
-              : Text("Jadwal Hari ${day.toCascadeString()} Kosong",
-                  style:
-                      const TextStyle(color: Colors.white)), // Warna teks putih
-          Divider(color: Colors.white), // Warna Divider putih
+              : Text(
+                  "Jadwal Hari ${day.toCascadeString()} Kosong",
+                  style: const TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+          const Divider(color: Colors.white),
           TextButton(
-            child: const Text('Tambah',
-                style: TextStyle(color: Colors.white)), // Warna teks putih
+            child: const Text('Tambah', style: TextStyle(color: Colors.white)),
             onPressed: () {
               _addScheduleDialog(day);
             },

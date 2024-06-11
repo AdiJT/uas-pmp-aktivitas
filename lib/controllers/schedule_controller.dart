@@ -77,4 +77,69 @@ class ScheduleController extends GetxController {
     }
     return map;
   }
+
+  void addSchedule(Schedule schedule) {
+    schedules.add(schedule);
+    Get.showSnackbar(const GetSnackBar(
+      duration: Duration(seconds: 5),
+      icon: Icon(Icons.check, color: Colors.white),
+      snackPosition: SnackPosition.TOP,
+      shouldIconPulse: false,
+      backgroundColor: Colors.green,
+      message: "Tambah Jadwal Sukses!",
+    ));
+  }
+
+  void deleteSchedule(Schedule schedule) {
+    schedules.remove(schedule);
+    Get.showSnackbar(const GetSnackBar(
+      duration: Duration(seconds: 5),
+      icon: Icon(Icons.check, color: Colors.white),
+      snackPosition: SnackPosition.TOP,
+      shouldIconPulse: false,
+      backgroundColor: Colors.red,
+      message: "Hapus Jadwal Sukses!",
+    ));
+  }
+
+  bool checkTimeSlotInDay(Day day, TimeOfDay startTime, Duration duration) {
+    final sTimeInHour =
+        startTime.hour.toDouble() + (startTime.minute.toDouble() / 60);
+
+    final durationDouble = duration.inSeconds.toDouble() / (60 * 60).toDouble();
+
+    if (sTimeInHour + durationDouble > 24) return false;
+
+    final eTimeInHour = sTimeInHour + durationDouble;
+
+    final daySchedules = scheduleByDay[day]?.map((e) {
+      final sT = e.time.hour.toDouble() + (e.time.minute.toDouble() / 60);
+      final eT = sT + (e.duration.inSeconds.toDouble() / (60 * 60).toDouble());
+      return (sT, eT);
+    }).toList();
+
+    if (daySchedules == null || daySchedules.isEmpty) return true;
+
+    if (daySchedules.any((s) => s.$1 == sTimeInHour)) return false;
+
+    if (daySchedules.any((s) => s.$2 == eTimeInHour)) return false;
+
+    if (daySchedules.any((s) => s.$1 < sTimeInHour && s.$2 > eTimeInHour)) {
+      return false;
+    }
+
+    if (daySchedules.any((s) => s.$1 < sTimeInHour && s.$2 > eTimeInHour)) {
+      return false;
+    }
+
+    if (daySchedules.any((s) => s.$1 > sTimeInHour && s.$2 < eTimeInHour)) {
+      return false;
+    }
+
+    if (daySchedules.any((s) => s.$1 < sTimeInHour && s.$2 > eTimeInHour)) {
+      return false;
+    }
+
+    return true;
+  }
 }
