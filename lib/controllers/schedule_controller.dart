@@ -61,9 +61,19 @@ class ScheduleController extends GetxController {
   }
 
   Map<Day, List<Schedule>> get scheduleByDay {
-    final map = { for (var item in Day.values) item : <Schedule>[] };
+    final map = {for (var item in Day.values) item: <Schedule>[]};
     for (var s in schedules) {
       map[s.day]!.add(s);
+    }
+
+    for (var s in map.values) {
+      s.sort((s1, s2) {
+        if (s1.time.hour == s2.time.hour) {
+          return s1.time.minute.compareTo(s2.time.minute);
+        }
+
+        return s1.time.hour.compareTo(s2.time.hour);
+      });
     }
     return map;
   }

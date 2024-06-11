@@ -1,4 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_uas_aktivitas/common_widgets/duration_picker.dart';
+import 'package:flutter_application_uas_aktivitas/commons/duration_extension.dart';
+import 'package:flutter_application_uas_aktivitas/commons/validation.dart';
+import 'package:flutter_application_uas_aktivitas/controllers/schedule_controller.dart';
+import 'package:flutter_application_uas_aktivitas/models/schedule.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class SchedulePage extends StatefulWidget {
   const SchedulePage({super.key});
@@ -8,6 +15,199 @@ class SchedulePage extends StatefulWidget {
 }
 
 class _SchedulePageState extends State<SchedulePage> {
+  final controller = Get.find<ScheduleController>();
+
+  void _addScheduleDialog(Day day) {
+    final formKey = GlobalKey<FormState>();
+    final titleController = TextEditingController();
+    final descriptionController = TextEditingController();
+    final timeController = TextEditingController();
+    final durationController = DurationPickerController();
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Tambah Jadwal di Hari ${day.toCascadeString()}"),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                Form(
+                  key: formKey,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: titleController,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        decoration: const InputDecoration(
+                          label: Row(
+                            children: [
+                              Text('Judul'),
+                              Text(
+                                ' *',
+                                style: TextStyle(color: Colors.red),
+                              )
+                            ],
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.trim() == "") {
+                            return "Belum diisi";
+                          }
+                          return null;
+                        },
+                      ),
+                      TextFormField(
+                        maxLines: 2,
+                        controller: descriptionController,
+                        decoration: const InputDecoration(
+                          labelText: "Dekripsi",
+                        ),
+                      ),
+                      TextFormField(
+                        controller: timeController,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (value) {
+                          final rules = [
+                            notNullOrEmpty,
+                            parseSuccess((s) {
+                              try {
+                                final format = DateFormat('h:mm a');
+                                return TimeOfDay.fromDateTime(
+                                    format.parse(value!));
+                              } on Exception catch (_) {
+                                return null;
+                              }
+                            })
+                          ];
+                      
+                          final result = rules.map((e) => e.validate(value));
+                      
+                          if (!result.every((e) => e.success)) {
+                            return result
+                                .firstWhere((e) => e.success == false)
+                                .errorMessage;
+                          }
+                      
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          label: const Row(
+                            children: [
+                              Text('Waktu'),
+                              Text(
+                                ' *',
+                                style: TextStyle(color: Colors.red),
+                              )
+                            ],
+                          ),
+                          hintText: "h:mm AM/PM",
+                          suffixIcon: IconButton(
+                            onPressed: () async {
+                              final timeOfDay = await showTimePicker(
+                                context: context,
+                                initialTime: TimeOfDay.now(),
+                              );
+                      
+                              if (timeOfDay != null) {
+                                if (context.mounted) {
+                                  timeController.text = timeOfDay.format(context);
+                                }
+                              }
+                            },
+                            icon: const Icon(Icons.schedule),
+                          ),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Durasi'),
+                          DurationPicker(
+                            controller: durationController,
+                            onChange: (value) {
+                              print(durationController.value);
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    TextButton(onPressed: () {
+                      if(formKey.currentState!.validate()) {
+                        
+                      }
+                    }, child: const Text('Tambah')),
+                    TextButton(onPressed: () => Get.back(), child: const Text('Batal')),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _scheduleCard(Day day, List<Schedule> schedules) {
+    return Card(
+      margin: const EdgeInsets.all(10),
+      color: Theme.of(context).colorScheme.surface,
+      elevation: 7,
+      child: Column(
+        children: [
+          Container(
+            margin: const EdgeInsets.only(top: 10),
+            child: Text(
+              day.toCascadeString(),
+              style: const TextStyle(fontSize: 25, fontWeight: FontWeight.w700),
+            ),
+          ),
+          Divider(color: Theme.of(context).colorScheme.primary),
+          schedules.isNotEmpty
+              ? ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: schedules.length,
+                  itemBuilder: (context, index) {
+                    final schedule = schedules[index];
+
+                    return ListTile(
+                      title: Text(
+                        schedule.title,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                      trailing: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                              '${"${schedule.time.hour}".padLeft(2, '0')}:${"${schedule.time.minute}".padLeft(2, '0')}'),
+                          Text(schedule.duration.formatDuration()),
+                        ],
+                      ),
+                    );
+                  },
+                )
+              : Text("Jadwal Hari ${day.toCascadeString()} Kosong"),
+          Divider(color: Theme.of(context).colorScheme.primary),
+          TextButton(
+            child: const Text('Tambah'),
+            onPressed: () {
+              _addScheduleDialog(day);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,6 +217,16 @@ class _SchedulePageState extends State<SchedulePage> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
+      ),
+      body: SingleChildScrollView(
+        child: Obx(
+          () => Column(
+            children: [
+              for (var entries in controller.scheduleByDay.entries)
+                _scheduleCard(entries.key, entries.value)
+            ],
+          ),
+        ),
       ),
     );
   }

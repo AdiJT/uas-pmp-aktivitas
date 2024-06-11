@@ -31,7 +31,7 @@ class _MainLayoutState extends State<MainLayout> {
           BottomNavigationBarItem(
               icon: Icon(Icons.local_activity_outlined), label: 'Aktivitas'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.schedule_outlined), label: 'Jadwal Kuliah'),
+              icon: Icon(Icons.schedule_outlined), label: 'Jadwal'),
         ],
         onTap: (value) => setState(() => currentTabIndex = value),
       ),

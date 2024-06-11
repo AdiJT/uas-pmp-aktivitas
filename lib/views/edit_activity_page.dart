@@ -191,7 +191,9 @@ class _EditActivityPageState extends State<EditActivityPage> {
                         );
 
                         if (timeOfDay != null) {
-                          timeController.text = timeOfDay.format(context);
+                          if(context.mounted) {
+                            timeController.text = timeOfDay.format(context);
+                          }
                         }
                       },
                       icon: const Icon(Icons.schedule),

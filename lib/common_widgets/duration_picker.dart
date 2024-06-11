@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_uas_aktivitas/common_widgets/number_picker.dart';
 
+class DurationPickerController extends ValueNotifier<Duration> {
+  DurationPickerController({Duration? duration})
+      : super(duration ?? Duration.zero);
+}
+
 class DurationPicker extends StatefulWidget {
   const DurationPicker({
     super.key,
     required this.onChange,
     this.initialDuration = Duration.zero,
+    this.controller,
   });
 
+  final DurationPickerController? controller;
   final Duration initialDuration;
   final void Function(Duration value) onChange;
 
@@ -28,9 +35,16 @@ class _DurationPickerState extends State<DurationPicker> {
     inSeconds = widget.initialDuration.inSeconds % 60;
   }
 
+  @override
+  void dispose() {
+    super.widget.controller?.dispose();
+    super.dispose();
+  }
+
   void _durationChange() {
-    widget.onChange(
-        Duration(hours: inHours, minutes: inMinutes, seconds: inSeconds));
+    final newDuration = Duration(hours: inHours, minutes: inMinutes, seconds: inSeconds);
+    super.widget.controller?.value = newDuration;
+    widget.onChange(newDuration);
   }
 
   @override
