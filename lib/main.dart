@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_uas_aktivitas/controllers/activity_controller.dart';
 import 'package:flutter_application_uas_aktivitas/controllers/schedule_controller.dart';
+import 'package:flutter_application_uas_aktivitas/database/database_helper.dart';
 import 'package:flutter_application_uas_aktivitas/views/main_layout.dart';
 import 'package:get/get.dart';
-import 'package:intl/date_symbol_data_local.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  Get.lazyPut(() => ActivityController());
-  Get.lazyPut(() => ScheduleController());
+  final instance = await dbInstance;
+  Get.put(instance, permanent: true);
 
-  initializeDateFormatting('en_US', null).then((_) => runApp(const MyApp()));
+  Get.put(ActivityController());
+  Get.put(ScheduleController());
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

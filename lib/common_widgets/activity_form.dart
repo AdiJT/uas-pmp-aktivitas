@@ -152,6 +152,7 @@ class _ActivityFormState extends State<ActivityForm> {
             Get.back(closeOverlays: true);
             widget.onSubmit(
               Activity(
+                id: widget.initialValue?.id,
                 name: nameController.text.trim(),
                 description: descriptionController.text.trim(),
                 date: date,

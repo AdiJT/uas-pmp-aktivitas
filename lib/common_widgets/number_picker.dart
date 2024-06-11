@@ -53,8 +53,8 @@ class _NumberPickerState extends State<NumberPicker> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 60,
-      height: 120,
+      width: kMinInteractiveDimension,
+      height: kMinInteractiveDimension * 3,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,

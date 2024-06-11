@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_uas_aktivitas/common_widgets/activity_list_tile.dart';
 import 'package:flutter_application_uas_aktivitas/common_widgets/schedule_card.dart';
 import 'package:flutter_application_uas_aktivitas/controllers/activity_controller.dart';
 import 'package:flutter_application_uas_aktivitas/controllers/schedule_controller.dart';
-import 'package:flutter_application_uas_aktivitas/commons/duration_extension.dart';
 import 'package:flutter_application_uas_aktivitas/models/schedule.dart';
 import 'package:get/get.dart';
 
@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> {
           'Home',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.lightBlue, // Warna AppBar lightBlue
+        backgroundColor: Colors.lightBlue,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -33,8 +33,7 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.all(10),
               child: Card(
-                color: Colors.orangeAccent.withOpacity(
-                    0.8), // Warna Card orangeAccent dengan transparansi
+                color: Colors.orangeAccent.withOpacity(0.8),
                 elevation: 7,
                 child: Column(
                   children: [
@@ -45,11 +44,11 @@ class _HomePageState extends State<HomePage> {
                         style: TextStyle(
                           fontSize: 25,
                           fontWeight: FontWeight.w700,
-                          color: Colors.white, // Warna teks putih
+                          color: Colors.white,
                         ),
                       ),
                     ),
-                    const Divider(color: Colors.white), // Warna Divider putih
+                    const Divider(color: Colors.white),
                     activityController.todayActivities.isNotEmpty
                         ? Obx(
                             () => ListView.builder(
@@ -60,50 +59,14 @@ class _HomePageState extends State<HomePage> {
                                 final activity =
                                     activityController.todayActivities[index];
 
-                                return ListTile(
-                                  title: Text(
-                                    activity.name,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15,
-                                      color: Colors.white, // Warna teks putih
-                                    ),
-                                  ),
-                                  subtitle: Text(
-                                    '${activity.date.day}/${activity.date.month}/${activity.date.year}',
-                                    style: const TextStyle(
-                                      color: Colors
-                                          .white70, // Warna subtitle putih dengan transparansi
-                                    ),
-                                  ),
-                                  trailing: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        '${activity.date.hour}:${activity.date.minute}',
-                                        style: const TextStyle(
-                                          color: Colors
-                                              .white70, // Warna teks putih dengan transparansi
-                                        ),
-                                      ),
-                                      Text(
-                                        activity.duration.formatDuration(),
-                                        style: const TextStyle(
-                                          color: Colors
-                                              .white70, // Warna teks putih dengan transparansi
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
+                                return ActivityListTile(activity: activity);
                               },
                             ),
                           )
                         : const Text(
                             "Tidak Ada Aktivitas Hari Ini",
                             style: TextStyle(
-                              color: Colors.redAccent, // Warna teks redAccent
+                              color: Colors.redAccent,
                             ),
                           ),
                   ],

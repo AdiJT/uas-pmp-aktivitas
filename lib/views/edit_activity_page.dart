@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_uas_aktivitas/common_widgets/activity_form.dart';
 import 'package:flutter_application_uas_aktivitas/controllers/activity_controller.dart';
+import 'package:flutter_application_uas_aktivitas/models/activity.dart';
 import 'package:get/get.dart';
 
 class EditActivityPage extends StatefulWidget {
-  const EditActivityPage({super.key, required this.index});
+  const EditActivityPage({super.key, required this.activity});
 
-  final int index;
+  final Activity activity;
 
   @override
   State<EditActivityPage> createState() => _EditActivityPageState();
@@ -28,13 +29,14 @@ class _EditActivityPageState extends State<EditActivityPage> {
           'Edit Aktivitas',
           style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: Colors.white), // Warna teks putih
+              color: Colors.white),
         ),
-        backgroundColor: Colors.lightBlue, // Warna AppBar menjadi lightblue
+        backgroundColor: Colors.lightBlue,
       ),
       body: ActivityForm(
-        initialValue: controller.activities[widget.index],
-        onSubmit: (value) => controller.editActivity(widget.index, value),
+        initialValue: widget.activity,
+        onSubmit: (value) =>
+            controller.editActivity(value),
         submitButtonIcon: const Icon(Icons.edit),
       ),
     );

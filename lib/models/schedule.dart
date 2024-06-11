@@ -1,18 +1,23 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class Schedule {
+  int id;
   String title;
   String? description;
   Day day;
   TimeOfDay time;
   Duration duration;
 
-  Schedule(
-      {required this.title,
-      this.description,
-      required this.day,
-      required this.time,
-      required this.duration});
+  Schedule({
+    int? id,
+    required this.title,
+    this.description,
+    required this.day,
+    required this.time,
+    required this.duration,
+  }) : id = id ?? Random().nextInt(pow(2, 32).toInt() - 1);
 
   Schedule.rest(Day day)
       : this(
@@ -21,6 +26,25 @@ class Schedule {
           time: const TimeOfDay(hour: 0, minute: 0),
           duration: const Duration(hours: 24),
         );
+
+  Schedule.fromMap(Map<String, Object?> map)
+      : id = map['id'] as int,
+        title = map['title'] as String,
+        description = map['description'] as String?,
+        day = dayFromInt(map['day'] as int),
+        time = TimeOfDay.fromDateTime(DateTime.parse(map['time'] as String)),
+        duration = Duration(seconds: map['duration'] as int);
+
+  Map<String, Object?> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'description': description,
+      'day': day.toInt(),
+      'time': DateTime(0, 0, 0, time.hour, time.minute).toString(),
+      'duration': duration.inSeconds,
+    };
+  }
 }
 
 enum Day { senin, selasa, rabu, kamis, jumat, sabtu, minggu }
@@ -35,6 +59,18 @@ extension DayTimeExtension on Day {
       Day.jumat => 'Jumat',
       Day.sabtu => 'Sabtu',
       Day.minggu => 'Minggu',
+    };
+  }
+
+  int toInt() {
+    return switch (this) {
+      Day.senin => 1,
+      Day.selasa => 2,
+      Day.rabu => 3,
+      Day.kamis => 4,
+      Day.jumat => 5,
+      Day.sabtu => 6,
+      Day.minggu => 7,
     };
   }
 }

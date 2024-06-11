@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_uas_aktivitas/commons/date_time_extension.dart';
 import 'package:flutter_application_uas_aktivitas/commons/duration_extension.dart';
 import 'package:flutter_application_uas_aktivitas/controllers/activity_controller.dart';
+import 'package:flutter_application_uas_aktivitas/models/activity.dart';
 import 'package:flutter_application_uas_aktivitas/views/edit_activity_page.dart';
 import 'package:get/get.dart';
 
 class DetailsActivityPage extends StatefulWidget {
-  const DetailsActivityPage({Key? key, required this.index}) : super(key: key);
+  const DetailsActivityPage({super.key, required this.activity});
 
-  final int index;
+  final Activity activity;
 
   @override
   State<DetailsActivityPage> createState() => _DetailsActivityPageState();
@@ -30,10 +31,11 @@ class _DetailsActivityPageState extends State<DetailsActivityPage> {
         backgroundColor: Colors.lightBlue, // Warna AppBar menjadi lightblue
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.edit),
-        onPressed: () => Get.to(() => EditActivityPage(index: widget.index)),
-        backgroundColor:
-            Colors.lightBlue, // Warna FloatingActionButton menjadi lightblue
+        onPressed: () =>
+            Get.to(() => EditActivityPage(activity: widget.activity)),
+        backgroundColor: Colors.lightBlue,
+        child: const Icon(
+            Icons.edit), // Warna FloatingActionButton menjadi lightblue
       ),
       body: SingleChildScrollView(
         child: Card(
@@ -46,24 +48,31 @@ class _DetailsActivityPageState extends State<DetailsActivityPage> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Obx(() => Text(controller.activities[widget.index].name,
-                    style: TextStyle(color: Colors.white))), // Warna teks putih
+                Obx(
+                  () => Text(
+                    controller.getById(widget.activity.id).name,
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
                 const Divider(),
                 Align(
                   alignment: Alignment.topLeft,
-                  child: Obx(() => Text(
-                      controller.activities[widget.index].description,
-                      style:
-                          TextStyle(color: Colors.white))), // Warna teks putih
+                  child: Obx(
+                    () => Text(
+                        controller.getById(widget.activity.id).description,
+                        style: const TextStyle(color: Colors.white)),
+                  ),
                 ),
                 const Divider(),
                 Align(
                   alignment: Alignment.centerRight,
                   child: Obx(
                     () => Text(
-                      controller.activities[widget.index].date
+                      controller
+                          .getById(widget.activity.id)
+                          .date
                           .toIdStyleStringWithMonthName(),
-                      style: TextStyle(color: Colors.white), // Warna teks putih
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                 ),
@@ -72,9 +81,9 @@ class _DetailsActivityPageState extends State<DetailsActivityPage> {
                   child: Obx(
                     () => Text(
                       TimeOfDay.fromDateTime(
-                              controller.activities[widget.index].date)
-                          .format(context),
-                      style: TextStyle(color: Colors.white), // Warna teks putih
+                        controller.getById(widget.activity.id).date,
+                      ).format(context),
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                 ),
@@ -82,9 +91,12 @@ class _DetailsActivityPageState extends State<DetailsActivityPage> {
                   alignment: Alignment.centerRight,
                   child: Obx(
                     () => Text(
-                      controller.activities[widget.index].duration
+                      controller
+                          .getById(widget.activity.id)
+                          .duration
                           .formatDuration(),
-                      style: TextStyle(color: Colors.white), // Warna teks putih
+                      style: const TextStyle(
+                          color: Colors.white), // Warna teks putih
                     ),
                   ),
                 ),
