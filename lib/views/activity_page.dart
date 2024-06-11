@@ -34,6 +34,7 @@ class _ActivityPageState extends State<ActivityPage> {
             final activity = controller.activities[index];
 
             return ListTile(
+              tileColor: activity.isDone == false ? Colors.grey[300] : null,
               onTap: () => Get.to(() => DetailsActivityPage(index: index,)),
               title: Text(
                 activity.name,

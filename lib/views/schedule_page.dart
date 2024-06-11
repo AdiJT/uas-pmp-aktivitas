@@ -77,17 +77,64 @@ class _SchedulePageState extends State<SchedulePage> {
                               } on Exception catch (_) {
                                 return null;
                               }
-                            })
+                            }),
+                            ValidationRule<String?>(
+                                message: "Slot waktu hari ini tidak cukup",
+                                rule: (s) {
+                                  final format = DateFormat('h:mm a');
+                                  final startTime = TimeOfDay.fromDateTime(
+                                      format.parse(value!));
+
+                                  final startTimeInHour =
+                                      startTime.hour.toDouble() +
+                                          (startTime.minute.toDouble() / 60);
+                                  final duration = durationController.value;
+
+                                  if (startTimeInHour + duration.inHours > 24) {
+                                    return false;
+                                  }
+
+                                  final endTimeInHour = startTimeInHour +
+                                      (duration.inHours +
+                                          (duration.inMinutes % 60) / 60);
+
+                                  final daySchedules =
+                                      controller.scheduleByDay[day]?.map((e) {
+                                    final sT = e.time.hour.toDouble() +
+                                        (e.time.minute.toDouble() / 60);
+                                    final eT = sT +
+                                        (e.duration.inHours +
+                                            (e.duration.inMinutes % 60) / 60);
+                                    return (sT, eT);
+                                  }).toList();
+
+                                  if (daySchedules == null ||
+                                      daySchedules.isEmpty) return true;
+
+                                  if (daySchedules
+                                      .any((s) => s.$1 == startTimeInHour)) {
+                                    return false;
+                                  }
+
+                                  if (daySchedules
+                                      .any((s) => s.$2 == endTimeInHour)) {
+                                    return false;
+                                  }
+
+                                  
+
+                                  return true;
+                                })
                           ];
-                      
+
                           final result = rules.map((e) => e.validate(value));
-                      
+
                           if (!result.every((e) => e.success)) {
                             return result
                                 .firstWhere((e) => e.success == false)
                                 .errorMessage;
                           }
-                      
+
                           return null;
                         },
                         decoration: InputDecoration(
@@ -107,10 +154,11 @@ class _SchedulePageState extends State<SchedulePage> {
                                 context: context,
                                 initialTime: TimeOfDay.now(),
                               );
-                      
+
                               if (timeOfDay != null) {
                                 if (context.mounted) {
-                                  timeController.text = timeOfDay.format(context);
+                                  timeController.text =
+                                      timeOfDay.format(context);
                                 }
                               }
                             },
@@ -124,9 +172,7 @@ class _SchedulePageState extends State<SchedulePage> {
                           const Text('Durasi'),
                           DurationPicker(
                             controller: durationController,
-                            onChange: (value) {
-                              print(durationController.value);
-                            },
+                            onChange: (value) {},
                           ),
                         ],
                       ),
@@ -136,12 +182,19 @@ class _SchedulePageState extends State<SchedulePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    TextButton(onPressed: () {
-                      if(formKey.currentState!.validate()) {
-                        
-                      }
-                    }, child: const Text('Tambah')),
-                    TextButton(onPressed: () => Get.back(), child: const Text('Batal')),
+                    TextButton(
+                        onPressed: () {
+                          if (formKey.currentState!.validate()) {
+                            final duration = durationController.value;
+                            final dateFormat = DateFormat('h:mm a');
+                            final startTime = TimeOfDay.fromDateTime(
+                                dateFormat.parse(timeController.text));
+                          }
+                        },
+                        child: const Text('Tambah')),
+                    TextButton(
+                        onPressed: () => Get.back(),
+                        child: const Text('Batal')),
                   ],
                 ),
               ],

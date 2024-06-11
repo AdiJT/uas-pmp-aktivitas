@@ -241,6 +241,7 @@ class _EditActivityPageState extends State<EditActivityPage> {
                 description: descriptionController.text.trim(),
                 date: date,
                 duration: duration,
+                isDone: controller.activities[widget.index].isDone,
               ),
             );
           }

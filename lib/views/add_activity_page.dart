@@ -232,6 +232,7 @@ class _AddActivityPageState extends State<AddActivityPage> {
                 description: descriptionController.text.trim(),
                 date: date,
                 duration: duration,
+                isDone: false,
               ),
             );
           }
