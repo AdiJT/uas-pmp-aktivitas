@@ -2,6 +2,7 @@ import 'dart:math';
 
 class Activity {
   int id;
+  int userId;
   String name;
   String description;
   DateTime date;
@@ -10,6 +11,7 @@ class Activity {
 
   Activity({
     int? id,
+    required this.userId,
     required this.name,
     required this.description,
     required this.date,
@@ -19,6 +21,7 @@ class Activity {
 
   Activity.fromMap(Map<String, Object?> map)
       : id = map['id'] as int,
+        userId = map['userId'] as int,
         name = map['name'] as String,
         description = map['description'] as String,
         date = DateTime.parse(map['date'] as String),
@@ -28,6 +31,7 @@ class Activity {
   Map<String, Object?> toMap() {
     return {
       'id': id,
+      'userId' : userId,
       'name': name,
       'description': description,
       'date': date.toString(),

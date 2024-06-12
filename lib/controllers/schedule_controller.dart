@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_uas_aktivitas/controllers/user_controller.dart';
 import 'package:flutter_application_uas_aktivitas/database/database_helper.dart';
 import 'package:flutter_application_uas_aktivitas/models/schedule.dart';
 import 'package:get/get.dart';
 import 'package:sqflite/sqflite.dart';
 
 class ScheduleController extends GetxController {
+  final userController = Get.find<UserController>();
   final schedules = <Schedule>[].obs;
   final _db = Get.find<Database>();
 
@@ -15,7 +17,11 @@ class ScheduleController extends GetxController {
   }
 
   void fetchData() {
-    _db.query(scheduleTable).then((query) {
+    if(userController.isLogin.value == false) return;
+
+    _db.query(scheduleTable,
+        where: "userId = ?",
+        whereArgs: [userController.user.value.id]).then((query) {
       schedules.assignAll(query.map((e) => Schedule.fromMap(e)).toList());
     });
   }
@@ -118,7 +124,8 @@ class ScheduleController extends GetxController {
     });
   }
 
-  bool checkTimeSlotInDay(Day day, TimeOfDay startTime, Duration duration, [int? id]) {
+  bool checkTimeSlotInDay(Day day, TimeOfDay startTime, Duration duration,
+      [int? id]) {
     final sTimeInHour =
         startTime.hour.toDouble() + (startTime.minute.toDouble() / 60);
 
@@ -128,7 +135,8 @@ class ScheduleController extends GetxController {
 
     final eTimeInHour = sTimeInHour + durationDouble;
 
-    final daySchedules = scheduleByDay[day]?.skipWhile((s) => s.id == id).map((e) {
+    final daySchedules =
+        scheduleByDay[day]?.skipWhile((s) => s.id == id).map((e) {
       final sT = e.time.hour.toDouble() + (e.time.minute.toDouble() / 60);
       final eT = sT + (e.duration.inSeconds.toDouble() / (60 * 60).toDouble());
       return (sT, eT);

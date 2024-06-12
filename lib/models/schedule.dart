@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 class Schedule {
   int id;
+  int userId;
   String title;
   String? description;
   Day day;
@@ -12,6 +13,7 @@ class Schedule {
 
   Schedule({
     int? id,
+    required this.userId,
     required this.title,
     this.description,
     required this.day,
@@ -19,16 +21,9 @@ class Schedule {
     required this.duration,
   }) : id = id ?? Random().nextInt(pow(2, 32).toInt() - 1);
 
-  Schedule.rest(Day day)
-      : this(
-          title: "Libur",
-          day: day,
-          time: const TimeOfDay(hour: 0, minute: 0),
-          duration: const Duration(hours: 24),
-        );
-
   Schedule.fromMap(Map<String, Object?> map)
       : id = map['id'] as int,
+        userId = map['userId'] as int,
         title = map['title'] as String,
         description = map['description'] as String?,
         day = dayFromInt(map['day'] as int),
@@ -38,6 +33,7 @@ class Schedule {
   Map<String, Object?> toMap() {
     return {
       'id': id,
+      'userId' : userId,
       'title': title,
       'description': description,
       'day': day.toInt(),

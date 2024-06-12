@@ -4,6 +4,7 @@ import 'package:flutter_application_uas_aktivitas/common_widgets/duration_picker
 import 'package:flutter_application_uas_aktivitas/common_widgets/time_text_form_field.dart';
 import 'package:flutter_application_uas_aktivitas/commons/date_time_extension.dart';
 import 'package:flutter_application_uas_aktivitas/commons/duration_extension.dart';
+import 'package:flutter_application_uas_aktivitas/controllers/user_controller.dart';
 import 'package:flutter_application_uas_aktivitas/models/activity.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -28,6 +29,8 @@ class ActivityForm extends StatefulWidget {
 
 class _ActivityFormState extends State<ActivityForm> {
   final _formKey = GlobalKey<FormState>();
+
+  final userController = Get.find<UserController>();
 
   final nameController = TextEditingController();
   final descriptionController = TextEditingController();
@@ -159,6 +162,7 @@ class _ActivityFormState extends State<ActivityForm> {
             widget.onSubmit(
               Activity(
                 id: widget.initialValue?.id,
+                userId: userController.user.value.id,
                 name: nameController.text.trim(),
                 description: descriptionController.text.trim(),
                 date: date,

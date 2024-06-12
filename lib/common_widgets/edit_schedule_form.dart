@@ -147,6 +147,7 @@ class _EditScheduleFormState extends State<EditScheduleForm> {
 
                       final schedule = Schedule(
                         id: widget.schedule.id,
+                        userId: widget.schedule.userId,
                         title: titleController.text,
                         description: descriptionController.text,
                         day: day,

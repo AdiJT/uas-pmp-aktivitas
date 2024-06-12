@@ -3,6 +3,7 @@ import 'package:flutter_application_uas_aktivitas/common_widgets/duration_picker
 import 'package:flutter_application_uas_aktivitas/common_widgets/time_text_form_field.dart';
 import 'package:flutter_application_uas_aktivitas/commons/validation.dart';
 import 'package:flutter_application_uas_aktivitas/controllers/schedule_controller.dart';
+import 'package:flutter_application_uas_aktivitas/controllers/user_controller.dart';
 import 'package:flutter_application_uas_aktivitas/models/schedule.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -16,7 +17,9 @@ class AddScheduleForm extends StatelessWidget {
   final descriptionController = TextEditingController();
   final timeController = TextEditingController();
   final durationController = DurationPickerController();
+
   final controller = Get.find<ScheduleController>();
+  final userController = Get.find<UserController>();
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +97,7 @@ class AddScheduleForm extends StatelessWidget {
                       final format = DateFormat('h:mm a');
 
                       final schedule = Schedule(
+                        userId: userController.user.value.id,
                         title: titleController.text,
                         day: day,
                         time: TimeOfDay.fromDateTime(

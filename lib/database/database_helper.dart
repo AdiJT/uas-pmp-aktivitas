@@ -5,6 +5,7 @@ String _databasePath = "app.db";
 
 String activityTable = 'activity';
 String scheduleTable = 'schedule';
+String userTable = 'user';
 
 Database? _db;
 Future<Database> get dbInstance async {
@@ -23,9 +24,20 @@ Future<Database> initDatabase() async {
     onCreate: (db, version) async {
       await db.execute(
         '''
+        CREATE TABLE $userTable
+        (
+          id INTEGER PRIMARY KEY, 
+          userName TEXT,
+          password TEXT
+        )'''
+      );
+
+      await db.execute(
+        '''
         CREATE TABLE $activityTable 
         (
           id INTEGER PRIMARY KEY, 
+          userId INTEGER,
           name TEXT, 
           description TEXT, 
           date TEXT, 
@@ -39,6 +51,7 @@ Future<Database> initDatabase() async {
         CREATE TABLE $scheduleTable
         (
           id INTEGER PRIMARY KEY, 
+          userId INTEGER,
           title TEXT, 
           description TEXT, 
           day INTEGER, 

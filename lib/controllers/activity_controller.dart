@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_uas_aktivitas/commons/date_time_extension.dart';
+import 'package:flutter_application_uas_aktivitas/controllers/user_controller.dart';
 import 'package:flutter_application_uas_aktivitas/database/database_helper.dart';
 import 'package:flutter_application_uas_aktivitas/models/activity.dart';
 import 'package:get/get.dart';
 import 'package:sqflite/sqflite.dart';
 
 class ActivityController extends GetxController {
+  final userController = Get.find<UserController>();
+
   final activities = <Activity>[].obs;
 
   final _db = Get.find<Database>();
@@ -40,8 +43,12 @@ class ActivityController extends GetxController {
   }
 
   void fetchData() {
+    if(userController.isLogin.value == false) return;
+
     // ignore: unused_local_variable
-    final query = _db.query(activityTable).then((q) {
+    final query = _db.query(activityTable,
+        where: "userId = ?",
+        whereArgs: [userController.user.value.id]).then((q) {
       final result = q.map((e) => Activity.fromMap(e)).toList();
       final doneActivities = result.where((e) => e.isDone == true).toList();
       final futureActivities = result
@@ -57,7 +64,8 @@ class ActivityController extends GetxController {
       futureActivities.sort((d1, d2) => d1.date.compareTo(d2.date));
       dueActivities.sort((d1, d2) => d1.date.compareTo(d2.date));
 
-      activities.assignAll([...dueActivities, ...futureActivities, ...doneActivities]);
+      activities.assignAll(
+          [...dueActivities, ...futureActivities, ...doneActivities]);
     });
   }
 
@@ -71,8 +79,9 @@ class ActivityController extends GetxController {
         },
       ).toList();
 
-  List<Activity> get dueActivities =>
-      activities.where((a) => a.isDone == false && a.date.compareTo(DateTime.now()) <= 0).toList();
+  List<Activity> get dueActivities => activities
+      .where((a) => a.isDone == false && a.date.compareTo(DateTime.now()) <= 0)
+      .toList();
 
   void addActivity(Activity newActivity) {
     _db.insert(activityTable, newActivity.toMap()).then((_) {
