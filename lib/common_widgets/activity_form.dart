@@ -14,11 +14,13 @@ class ActivityForm extends StatefulWidget {
     this.initialValue,
     required this.onSubmit,
     required this.submitButtonIcon,
+    this.dateTime,
   });
 
   final Activity? initialValue;
   final void Function(Activity) onSubmit;
   final Icon submitButtonIcon;
+  final DateTime? dateTime;
 
   @override
   State<ActivityForm> createState() => _ActivityFormState();
@@ -106,11 +108,12 @@ class _ActivityFormState extends State<ActivityForm> {
                   ),
                 ),
               ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                child: DateTextFormField(dateController: dateController),
-              ),
+              if (widget.dateTime == null)
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  child: DateTextFormField(dateController: dateController),
+                ),
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -143,6 +146,9 @@ class _ActivityFormState extends State<ActivityForm> {
         onPressed: () {
           if (_formKey.currentState!.validate()) {
             var date = dateController.text.trim().parseIdStyle();
+            if (widget.dateTime != null) {
+              date = widget.dateTime;
+            }
 
             final format = DateFormat('h:mm a');
             final time = TimeOfDay.fromDateTime(

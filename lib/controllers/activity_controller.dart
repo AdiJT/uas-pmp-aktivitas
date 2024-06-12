@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_uas_aktivitas/commons/date_time_extension.dart';
 import 'package:flutter_application_uas_aktivitas/database/database_helper.dart';
 import 'package:flutter_application_uas_aktivitas/models/activity.dart';
 import 'package:get/get.dart';
@@ -15,10 +16,48 @@ class ActivityController extends GetxController {
     fetchData();
   }
 
+  List<DateTime> get uniqueDate {
+    final unique = activities
+        .map((e) {
+          return e.date.removeTime();
+        })
+        .toSet()
+        .toList();
+
+    unique.sort((d1, d2) => d1.compareTo(d2));
+
+    return unique;
+  }
+
+  Map<DateTime, List<Activity>> get activityByDate {
+    final map = {for (var d in uniqueDate) d: <Activity>[]};
+
+    for (final activity in activities) {
+      map[activity.date.removeTime()]!.add(activity);
+    }
+
+    return map;
+  }
+
   void fetchData() {
     // ignore: unused_local_variable
-    final query = _db.query(activityTable, orderBy: 'id').then((q) {
-      activities.assignAll(q.map((e) => Activity.fromMap(e)).toList());
+    final query = _db.query(activityTable).then((q) {
+      final result = q.map((e) => Activity.fromMap(e)).toList();
+      final doneActivities = result.where((e) => e.isDone == true).toList();
+      final futureActivities = result
+          .where(
+              (e) => e.isDone == false && e.date.compareTo(DateTime.now()) > 0)
+          .toList();
+      final dueActivities = result
+          .where(
+              (e) => e.isDone == false && e.date.compareTo(DateTime.now()) <= 0)
+          .toList();
+
+      doneActivities.sort((d1, d2) => d1.date.compareTo(d2.date));
+      futureActivities.sort((d1, d2) => d1.date.compareTo(d2.date));
+      dueActivities.sort((d1, d2) => d1.date.compareTo(d2.date));
+
+      activities.assignAll([...dueActivities, ...futureActivities, ...doneActivities]);
     });
   }
 
@@ -33,7 +72,7 @@ class ActivityController extends GetxController {
       ).toList();
 
   List<Activity> get dueActivities =>
-      activities.where((a) => a.isDone == false).toList();
+      activities.where((a) => a.isDone == false && a.date.compareTo(DateTime.now()) <= 0).toList();
 
   void addActivity(Activity newActivity) {
     _db.insert(activityTable, newActivity.toMap()).then((_) {

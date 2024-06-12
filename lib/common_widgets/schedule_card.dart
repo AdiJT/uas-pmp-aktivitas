@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_uas_aktivitas/common_widgets/dialogs.dart';
-import 'package:flutter_application_uas_aktivitas/common_widgets/duration_picker.dart';
-import 'package:flutter_application_uas_aktivitas/common_widgets/time_text_form_field.dart';
 import 'package:flutter_application_uas_aktivitas/commons/duration_extension.dart';
-import 'package:flutter_application_uas_aktivitas/commons/validation.dart';
 import 'package:flutter_application_uas_aktivitas/controllers/schedule_controller.dart';
 import 'package:flutter_application_uas_aktivitas/models/schedule.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
+
+import 'add_schedule_form.dart';
+import 'edit_schedule_form.dart';
 
 class ScheduleCard extends StatefulWidget {
   const ScheduleCard({
@@ -36,109 +35,26 @@ class _ScheduleCardState extends State<ScheduleCard> {
   List<Schedule> get schedules => widget.schedules;
 
   void _addScheduleDialog(Day day) {
-    final formKey = GlobalKey<FormState>();
-    final titleController = TextEditingController();
-    final descriptionController = TextEditingController();
-    final timeController = TextEditingController();
-    final durationController = DurationPickerController();
+    
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: Text("Tambah Jadwal di Hari ${day.toCascadeString()}"),
-          content: SingleChildScrollView(
-            child: Column(
-              children: [
-                Form(
-                  key: formKey,
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        controller: titleController,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        decoration: const InputDecoration(
-                          label: Row(
-                            children: [
-                              Text('Judul'),
-                              Text(
-                                ' *',
-                                style: TextStyle(color: Colors.red),
-                              )
-                            ],
-                          ),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.trim() == "") {
-                            return "Belum diisi";
-                          }
-                          return null;
-                        },
-                      ),
-                      TextFormField(
-                        maxLines: 2,
-                        controller: descriptionController,
-                        decoration: const InputDecoration(
-                          labelText: "Dekripsi",
-                        ),
-                      ),
-                      TimeTextFormField(
-                        controller: timeController,
-                        validator: (timeOfday) {
-                          final rule = ValidationRule<TimeOfDay?>(
-                            message: "Slot waktu hari ini tidak cukup",
-                            rule: (startTime) => controller.checkTimeSlotInDay(
-                                day, startTime!, durationController.value),
-                          );
-                          final result = rule.validate(timeOfday);
+          content: AddScheduleForm(day: day),
+        );
+      },
+    );
+  }
 
-                          if (result.success == false)
-                            return result.errorMessage;
+  void _showEditScheduleDialog(Schedule schedule) {
 
-                          return null;
-                        },
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('Durasi'),
-                          DurationPicker(
-                            controller: durationController,
-                            onChange: (value) {},
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    TextButton(
-                        onPressed: () {
-                          if (formKey.currentState!.validate()) {
-                            final format = DateFormat('h:mm a');
-
-                            final schedule = Schedule(
-                              title: titleController.text,
-                              day: day,
-                              time: TimeOfDay.fromDateTime(
-                                  format.parse(timeController.text)),
-                              duration: durationController.value,
-                            );
-
-                            Get.back(closeOverlays: true);
-                            controller.addSchedule(schedule);
-                          }
-                        },
-                        child: const Text('Tambah')),
-                    TextButton(
-                        onPressed: () => Get.back(),
-                        child: const Text('Batal')),
-                  ],
-                ),
-              ],
-            ),
-          ),
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Edit Jadwal"),
+          content: EditScheduleForm(schedule: schedule,),
         );
       },
     );
@@ -212,6 +128,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                                   onSelected: (v) {
                                     switch (v) {
                                       case 'Edit':
+                                        _showEditScheduleDialog(schedule);
                                         break;
                                       case 'Hapus':
                                         showDeleteDialog(

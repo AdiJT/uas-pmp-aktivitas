@@ -14,7 +14,8 @@ const _monthName = [
 ];
 
 String _getMonthName(int month) {
-  if (month < 1 || month > 12) throw ArgumentError("Invalid Month Value", "month");
+  if (month < 1 || month > 12)
+    throw ArgumentError("Invalid Month Value", "month");
 
   return _monthName[month - 1];
 }
@@ -29,6 +30,15 @@ extension DateTimeExtension on DateTime {
   String toIdStyleStringWithMonthName() => "$day ${_getMonthName(month)} $year";
   String toIdStyleString() =>
       "${day.toString().padLeft(2, '0')}-${month.toString().padLeft(2, '0')}-${year.toString().padLeft(4, '0')}";
+  DateTime removeTime() {
+    return copyWith(
+      hour: 0,
+      minute: 0,
+      second: 0,
+      millisecond: 0,
+      microsecond: 0,
+    );
+  }
 }
 
 extension DateTimeParsing on String? {

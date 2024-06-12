@@ -1,8 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_uas_aktivitas/common_widgets/activity_list_tile.dart';
+import 'package:flutter_application_uas_aktivitas/views/activity_list_page.dart';
+import 'package:flutter_application_uas_aktivitas/views/activity_timeline_page.dart';
 import 'package:flutter_application_uas_aktivitas/controllers/activity_controller.dart';
-import 'package:flutter_application_uas_aktivitas/views/add_activity_page.dart';
 import 'package:get/get.dart';
+
+enum ListType { list, date }
+
+extension on ListType {
+  String toLongString() {
+    return switch (this) {
+      ListType.date => "Tampilkan sebagai kalender",
+      ListType.list => "Tampilkan sebagai daftar",
+    };
+  }
+
+  Icon icon() {
+    return switch (this) {
+      ListType.list => const Icon(Icons.list_alt),
+      ListType.date => const Icon(Icons.calendar_month_outlined),
+    };
+  }
+}
 
 class ActivityPage extends StatefulWidget {
   const ActivityPage({super.key});
@@ -13,6 +31,13 @@ class ActivityPage extends StatefulWidget {
 
 class _ActivityPageState extends State<ActivityPage> {
   final controller = Get.find<ActivityController>();
+
+  ListType listType = ListType.list;
+
+  final pages = {
+    ListType.date: const ActivityTimelinePage(),
+    ListType.list: const ActivityListPage()
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -27,33 +52,39 @@ class _ActivityPageState extends State<ActivityPage> {
         ),
         backgroundColor: Colors.lightBlue,
       ),
-      body: Obx(
-        () => ListView.builder(
-          shrinkWrap: true,
-          itemCount: controller.activities.length,
-          itemBuilder: (context, index) {
-            final activity = controller.activities[index];
-
-            return Container(
-              decoration: BoxDecoration(
-                color: activity.isDone == true
-                    ? const Color.fromARGB(255, 214, 165, 92)
-                    : Colors.orangeAccent.withOpacity(0.8),
-                borderRadius: BorderRadius.circular(15),
-              ),
-              margin: const EdgeInsets.only(left: 10, right: 10, top: 10),
-              child: ActivityListTile(activity: activity),
-            );
-          },
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.lightBlue,
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-        onPressed: () => Get.to(() => const AddActivityPage()),
+      body: Column(
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: PopupMenuButton<ListType>(
+                icon: const Icon(Icons.sort),
+                onSelected: (choice) {
+                  setState(() {
+                    listType = choice;
+                  });
+                },
+                itemBuilder: (context) {
+                  return ListType.values
+                      .map((e) => PopupMenuItem(
+                            value: e,
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(4),
+                                  child: e.icon(),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(e.toLongString()),
+                                )
+                              ],
+                            ),
+                          ))
+                      .toList();
+                }),
+          ),
+          Expanded(child: pages[listType]!),
+        ],
       ),
     );
   }

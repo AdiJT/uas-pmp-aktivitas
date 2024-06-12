@@ -1,64 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_uas_aktivitas/database/database_helper.dart';
 import 'package:flutter_application_uas_aktivitas/models/schedule.dart';
 import 'package:get/get.dart';
+import 'package:sqflite/sqflite.dart';
 
 class ScheduleController extends GetxController {
-  final schedules = <Schedule>[
-    Schedule(
-        title: "Pengolahan Citra Digital",
-        day: Day.senin,
-        time: const TimeOfDay(hour: 8, minute: 0),
-        duration: const Duration(hours: 2)),
-    Schedule(
-        title: "Rekayasa Perangkat Lunak",
-        day: Day.senin,
-        time: const TimeOfDay(hour: 11, minute: 0),
-        duration: const Duration(hours: 2)),
-    Schedule(
-        title: "Sistem Informasi Terintegrasi",
-        day: Day.senin,
-        time: const TimeOfDay(hour: 13, minute: 0),
-        duration: const Duration(hours: 2)),
-    Schedule.rest(Day.selasa),
-    Schedule(
-        title: "Analisis Media Sosial",
-        day: Day.rabu,
-        time: const TimeOfDay(hour: 10, minute: 0),
-        duration: const Duration(hours: 2)),
-    Schedule(
-        title: "Pembelajaran Mesin",
-        day: Day.rabu,
-        time: const TimeOfDay(hour: 13, minute: 0),
-        duration: const Duration(hours: 2)),
-    Schedule(
-        title: "Data Mining",
-        day: Day.kamis,
-        time: const TimeOfDay(hour: 8, minute: 0),
-        duration: const Duration(hours: 2)),
-    Schedule(
-        title: "Pemograman Multi Platform",
-        day: Day.kamis,
-        time: const TimeOfDay(hour: 11, minute: 0),
-        duration: const Duration(hours: 2)),
-    Schedule(
-        title: "Kriptografi",
-        day: Day.kamis,
-        time: const TimeOfDay(hour: 13, minute: 0),
-        duration: const Duration(hours: 2)),
-    Schedule.rest(Day.jumat),
-    Schedule.rest(Day.sabtu),
-    Schedule(
-        title: "Gereja",
-        day: Day.minggu,
-        time: const TimeOfDay(hour: 7, minute: 0),
-        duration: const Duration(hours: 2)),
-  ].obs;
+  final schedules = <Schedule>[].obs;
+  final _db = Get.find<Database>();
 
-  List<Schedule> get todaySchedule {
-    final today = dayFromDateTime(DateTime.now());
-
-    return schedules.where((s) => s.day == today).toList();
+  @override
+  void onInit() {
+    super.onInit();
+    fetchData();
   }
+
+  void fetchData() {
+    _db.query(scheduleTable).then((query) {
+      schedules.assignAll(query.map((e) => Schedule.fromMap(e)).toList());
+    });
+  }
+
+  List<Schedule> get todaySchedule =>
+      scheduleByDay[dayFromDateTime(DateTime.now())]!;
 
   Map<Day, List<Schedule>> get scheduleByDay {
     final map = {for (var item in Day.values) item: <Schedule>[]};
@@ -79,30 +42,83 @@ class ScheduleController extends GetxController {
   }
 
   void addSchedule(Schedule schedule) {
-    schedules.add(schedule);
-    Get.showSnackbar(const GetSnackBar(
-      duration: Duration(seconds: 5),
-      icon: Icon(Icons.check, color: Colors.white),
-      snackPosition: SnackPosition.TOP,
-      shouldIconPulse: false,
-      backgroundColor: Colors.green,
-      message: "Tambah Jadwal Sukses!",
-    ));
+    _db.insert(scheduleTable, schedule.toMap()).then((count) {
+      fetchData();
+      if (count > 0) {
+        Get.showSnackbar(const GetSnackBar(
+          duration: Duration(seconds: 5),
+          icon: Icon(Icons.check, color: Colors.white),
+          snackPosition: SnackPosition.TOP,
+          shouldIconPulse: false,
+          backgroundColor: Colors.green,
+          message: "Tambah Jadwal Sukses!",
+        ));
+      } else {
+        Get.showSnackbar(const GetSnackBar(
+          duration: Duration(seconds: 5),
+          icon: Icon(Icons.check, color: Colors.white),
+          snackPosition: SnackPosition.TOP,
+          shouldIconPulse: false,
+          backgroundColor: Colors.red,
+          message: "Tambah Jadwal Gagal!",
+        ));
+      }
+    });
+  }
+
+  void editSchedule(Schedule schedule) {
+    _db.update(scheduleTable, schedule.toMap(),
+        where: "id = ?", whereArgs: [schedule.id]).then((count) {
+      fetchData();
+      if (count > 0) {
+        Get.showSnackbar(const GetSnackBar(
+          duration: Duration(seconds: 5),
+          icon: Icon(Icons.check, color: Colors.white),
+          snackPosition: SnackPosition.TOP,
+          shouldIconPulse: false,
+          backgroundColor: Colors.green,
+          message: "Edit Jadwal Sukses!",
+        ));
+      } else {
+        Get.showSnackbar(const GetSnackBar(
+          duration: Duration(seconds: 5),
+          icon: Icon(Icons.check, color: Colors.white),
+          snackPosition: SnackPosition.TOP,
+          shouldIconPulse: false,
+          backgroundColor: Colors.red,
+          message: "Edit Jadwal Gagal!",
+        ));
+      }
+    });
   }
 
   void deleteSchedule(Schedule schedule) {
-    schedules.remove(schedule);
-    Get.showSnackbar(const GetSnackBar(
-      duration: Duration(seconds: 5),
-      icon: Icon(Icons.check, color: Colors.white),
-      snackPosition: SnackPosition.TOP,
-      shouldIconPulse: false,
-      backgroundColor: Colors.red,
-      message: "Hapus Jadwal Sukses!",
-    ));
+    _db.delete(scheduleTable, where: "id = ?", whereArgs: [schedule.id]).then(
+        (count) {
+      fetchData();
+      if (count > 0) {
+        Get.showSnackbar(const GetSnackBar(
+          duration: Duration(seconds: 5),
+          icon: Icon(Icons.check, color: Colors.white),
+          snackPosition: SnackPosition.TOP,
+          shouldIconPulse: false,
+          backgroundColor: Colors.green,
+          message: "Hapus Jadwal Sukses!",
+        ));
+      } else {
+        Get.showSnackbar(const GetSnackBar(
+          duration: Duration(seconds: 5),
+          icon: Icon(Icons.check, color: Colors.white),
+          snackPosition: SnackPosition.TOP,
+          shouldIconPulse: false,
+          backgroundColor: Colors.red,
+          message: "Hapus Jadwal Gagal!",
+        ));
+      }
+    });
   }
 
-  bool checkTimeSlotInDay(Day day, TimeOfDay startTime, Duration duration) {
+  bool checkTimeSlotInDay(Day day, TimeOfDay startTime, Duration duration, [int? id]) {
     final sTimeInHour =
         startTime.hour.toDouble() + (startTime.minute.toDouble() / 60);
 
@@ -112,7 +128,7 @@ class ScheduleController extends GetxController {
 
     final eTimeInHour = sTimeInHour + durationDouble;
 
-    final daySchedules = scheduleByDay[day]?.map((e) {
+    final daySchedules = scheduleByDay[day]?.skipWhile((s) => s.id == id).map((e) {
       final sT = e.time.hour.toDouble() + (e.time.minute.toDouble() / 60);
       final eT = sT + (e.duration.inSeconds.toDouble() / (60 * 60).toDouble());
       return (sT, eT);

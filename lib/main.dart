@@ -31,6 +31,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         fontFamily: 'Century Gothic',
       ),
+      darkTheme: ThemeData.dark(useMaterial3: true),
       debugShowCheckedModeBanner: false,
       home: const MainLayout(),
     );
