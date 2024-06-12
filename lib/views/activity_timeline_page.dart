@@ -47,7 +47,9 @@ class _ActivityTimelinePageState extends State<ActivityTimelinePage> {
                 icon: const Icon(Icons.keyboard_double_arrow_left),
                 iconSize: 34,
                 onPressed: () {
+                  if (controller.uniqueDate.isEmpty) return;
                   int index = controller.uniqueDate.indexOf(selectedDate);
+
                   if (index == -1) {
                     setState(() {
                       selectedDate = controller.uniqueDate[0];
@@ -71,6 +73,8 @@ class _ActivityTimelinePageState extends State<ActivityTimelinePage> {
                 icon: const Icon(Icons.keyboard_double_arrow_right),
                 iconSize: 34,
                 onPressed: () {
+                  if (controller.uniqueDate.isEmpty) return;
+
                   int index = controller.uniqueDate.indexOf(selectedDate);
                   if (index == -1) {
                     setState(() {
@@ -102,12 +106,15 @@ class _ActivityTimelinePageState extends State<ActivityTimelinePage> {
               });
             },
           ),
-          if (controller.activityByDate[selectedDate] != null)
-            Obx(
-              () => ActivityList(
+          Obx(() {
+            if (controller.activityByDate[selectedDate] != null) {
+              return ActivityList(
                 activities: controller.activityByDate[selectedDate]!,
-              ),
-            ),
+              );
+            }
+
+            return SizedBox();
+          })
         ],
       ),
     );

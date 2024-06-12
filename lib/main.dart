@@ -37,8 +37,10 @@ class MyApp extends StatelessWidget {
       ),
       darkTheme: ThemeData.dark(useMaterial3: true),
       debugShowCheckedModeBanner: false,
-      home: const Center(
-        child: CircularProgressIndicator(),
+      home: Container(
+        alignment: Alignment.center,
+        color: Colors.white,
+        child: const CircularProgressIndicator(),
       ),
     );
   }

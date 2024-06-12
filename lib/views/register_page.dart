@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_uas_aktivitas/controllers/user_controller.dart';
-import 'package:flutter_application_uas_aktivitas/views/register_page.dart';
+import 'package:flutter_application_uas_aktivitas/views/login_page.dart';
 import 'package:get/get.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   final userController = Get.find<UserController>();
 
   final formKey = GlobalKey<FormState>();
@@ -31,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
 
                 // logo
                 const Icon(
-                  Icons.login,
+                  Icons.app_registration_outlined,
                   size: 100,
                 ),
 
@@ -119,7 +119,7 @@ class _LoginPageState extends State<LoginPage> {
                 GestureDetector(
                   onTap: () {
                     if(formKey.currentState!.validate()) {
-                      userController.login(userNameController.text, passwordController.text);
+                      userController.register(userNameController.text, passwordController.text);
                     }
                   },
                   child: Container(
@@ -131,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     child: const Center(
                       child: Text(
-                        "Masuk",
+                        "Daftar",
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -148,14 +148,14 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Tidak punya akun?',
+                      'Sudah punya akun?',
                       style: TextStyle(color: Colors.grey[700]),
                     ),
                     const SizedBox(width: 4),
                     InkWell(
-                      onTap: () => Get.to(() => const RegisterPage()),
+                      onTap: () => Get.to(() => const LoginPage()),
                       child: const Text(
-                        'Daftar Sekarang.',
+                        'Login Sekarang.',
                         style: TextStyle(
                           color: Colors.blue,
                           fontWeight: FontWeight.bold,

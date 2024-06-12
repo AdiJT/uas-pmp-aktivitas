@@ -15,14 +15,14 @@ class UserController extends GetxController {
   var user = User(userName: '', password: '').obs;
 
   @override
-  void onInit() {
-    super.onInit();
+  void onReady() {
+    super.onReady();
 
     ever(isLogin, (b) {
       if (b == true) {
-        Get.offAll(const LoginPage());
+        Get.offAll(() => const MainLayout());
       } else {
-        Get.offAll(const MainLayout());
+        Get.offAll(() => const LoginPage());
       }
     });
 
@@ -113,5 +113,11 @@ class UserController extends GetxController {
         backgroundColor: Colors.red,
       ));
     }
+  }
+
+  void logout() {
+    user(User(userName: '', password: ''));
+    sharedPrefs.clear();
+    isLogin.value = false;
   }
 }

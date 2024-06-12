@@ -16,15 +16,6 @@ class _SchedulePageState extends State<SchedulePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Jadwal',
-          style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.white), // Warna teks putih
-        ),
-        backgroundColor: Colors.lightBlue, // Warna AppBar menjadi lightblue
-      ),
       body: SingleChildScrollView(
         child: Obx(
           () => Column(

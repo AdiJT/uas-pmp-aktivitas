@@ -18,15 +18,15 @@ class _HomePageState extends State<HomePage> {
   final scheduleController = Get.find<ScheduleController>();
 
   @override
+  void initState() {
+    super.initState();
+    activityController.fetchData();
+    scheduleController.fetchData();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Home',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: Colors.lightBlue,
-      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
